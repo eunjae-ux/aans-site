@@ -607,6 +607,11 @@ html[lang="en"] .body {
   max-width: none;
   aspect-ratio: 1;
   transform: translateX(calc(-50% - 20 * var(--s)));
+  /* the graphic itself fades out toward the top, so the page's noise
+     background carries on above it with no seam (a colour band laid over
+     the top used to show as a step: flat, darker, no noise) */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 calc(410 / 1768 * 100%));
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 calc(410 / 1768 * 100%));
 }
 
 .outro__graphic img {
@@ -621,16 +626,6 @@ html[lang="en"] .body {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-}
-
-.outro__graphic::after {
-  content: "";
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  top: calc(-158 / 1768 * 100%);
-  height: calc(572 / 1768 * 100%);
-  background: linear-gradient(to bottom, #0a100d, rgba(0, 0, 0, 0));
 }
 
 .collection {
