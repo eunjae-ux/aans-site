@@ -402,6 +402,25 @@ html[lang="en"] .body {
   will-change: transform;
 }
 
+/* Where the browser can tie an animation to the scroll position itself, the
+   parallax runs there, in step with the scroll (a script updating it a frame
+   behind a native touch scroll is what made it judder on phones). main.js
+   leaves --kv-p alone in that case. */
+@supports (animation-timeline: scroll()) {
+  .kv__media {
+    transform: none;
+    animation: kv-parallax linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 max(560px, 100lvh);
+  }
+
+  @keyframes kv-parallax {
+    to {
+      transform: translate3d(0, 30%, 0);
+    }
+  }
+}
+
 /* The photo's focal point (--kv-fx/--kv-fy, as fractions of the image) is
    pinned to the centre of the screen. Desktop follows the design (3390px box
    at 1440 × 990); mobile zooms out to keep the whole head in frame — the
@@ -466,6 +485,7 @@ html[lang="en"] .body {
 @media (prefers-reduced-motion: reduce) {
   .kv__media {
     transform: none;
+    animation: none;
   }
 
   .kv__media > img,

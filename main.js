@@ -64,16 +64,25 @@ if (kv) {
     setTimeout(ready, 2500);
   }
 
+  // Parallax: CSS runs it on the scroll timeline where supported (style.css).
+  // Otherwise it's fed from here — but only with a mouse/trackpad, where
+  // Lenis drives the scroll and this stays in step; under a finger the
+  // native scroll would run ahead of it and the photo would judder, so on
+  // touch screens without scroll timelines the photo simply scrolls along.
+  const cssTimeline = window.CSS?.supports?.("animation-timeline: scroll()");
+  const touchOnly = window.matchMedia("(hover: none)").matches;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let last = -1;
-  const update = () => {
-    const p = reduced.matches ? 0 : Math.min(Math.max(window.scrollY / kv.offsetHeight, 0), 1);
-    if (p !== last) kv.style.setProperty("--kv-p", (last = p).toFixed(4));
-  };
-  if (lenis) lenis.on("scroll", update);
-  window.addEventListener("scroll", update, { passive: true });
-  window.addEventListener("resize", update);
-  update();
+  if (!cssTimeline && !touchOnly) {
+    let last = -1;
+    const update = () => {
+      const p = reduced.matches ? 0 : Math.min(Math.max(window.scrollY / kv.offsetHeight, 0), 1);
+      if (p !== last) kv.style.setProperty("--kv-p", (last = p).toFixed(4));
+    };
+    if (lenis) lenis.on("scroll", update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  }
 }
 
 // Footer "Go to top": glide back to the top of the page.
