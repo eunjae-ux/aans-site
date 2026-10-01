@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!-- status bar / browser chrome tint: the page's black-noise background on average -->
+  <meta name="theme-color" content="#101010" />
+  <title>All About Noirs — CUT 01. URBAN EXOSKELETON</title>
+  <meta name="description" content="An urban techwear brand for those who live within the city. All About Noirs. CUT 01. URBAN EXOSKELETON" />
+  <link rel="icon" href="data:," />
+  <link rel="alternate" hreflang="en" href="index.html" />
+  <link rel="alternate" hreflang="ja" href="jp/index.html" />
+  <link rel="alternate" hreflang="ko" href="kr/index.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" />
+  <link rel="stylesheet" href="style.css?v=20261001102632" />
+  <script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }</script>
+  <script>
+    // The intro plays once, on the first arrival in this browsing session —
+    // not on a reload, Back/Forward, or a language change.
+    (function () {
+      var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+      if (nav && nav.type !== "navigate") return;
+      try {
+        if (sessionStorage.getItem("aans:intro-seen")) return;
+        sessionStorage.setItem("aans:intro-seen", "1");
+      } catch (e) {}
+      document.documentElement.classList.add("intro-active");
+    })();
+  </script>
+</head>
+<body>
+  <!-- Intro (A_Intro): full-screen layer over the top of the page; see intro/intro.js -->
+  <div class="gate" aria-label="All About Noirs — Urban Exoskeleton">
+    <canvas class="gate__canvas" aria-hidden="true"></canvas>
+    <span class="gate__cursor" aria-hidden="true">Scroll</span>
+    <!-- copy builds up one piece at a time (intro/intro.js adds .s1–.s5 to .gate) -->
+    <div class="gate__copy">
+      <p class="gate__title">
+        <span class="gate__word gate__word--first"><span>All About Noirs</span></span>
+        <span class="gate__slot gate__slot--rule" aria-hidden="true"><span><span class="gate__rule"></span></span></span>
+        <span class="gate__slot gate__slot--word"><span class="gate__word"><span>Urban Exoskeleton</span></span></span>
+      </p>
+      <div class="gate__subslot">
+        <div>
+          <p class="gate__sub">
+            <span class="gate__line"><span>We Designed Urban Exoskeleton</span></span>
+            <span class="gate__line"><span>Enclosed, Not Exposed</span></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header: logo + language, blended over whatever scrolls beneath it -->
+  <header class="header">
+    <a class="header__logo" data-t="logo" href="index.html" aria-label="All About Noirs">
+      <span class="logo" aria-hidden="true">
+        <svg class="logo__word" viewBox="0 0 195 20" fill="currentColor">
+          <g class="logo__a"><g class="logo__fold" style="transform-origin:14.8px 10px"><path d="M7.57385 0.0801646H5.64986C2.68413 0.0801646 0.279638 2.47334 0.279638 5.42513V9.09232C0.279638 9.10604 0.291453 9.1178 0.305238 9.1178H1.8078C3.47184 9.1178 4.82276 7.77519 4.82276 6.11701V2.58114C4.82276 1.72854 5.51595 1.03861 6.37259 1.03861H6.85112C7.70776 1.03861 8.40094 1.72854 8.40094 2.58114V17.491C8.40094 18.3436 7.70776 19.0335 6.85112 19.0335H6.37259C5.51595 19.0335 4.82276 18.3436 4.82276 17.491V11.8873C4.82276 10.5623 5.83694 10.186 6.27412 10.086C6.29972 10.0802 6.29382 10.0508 6.26625 10.0508H3.55849C2.5896 10.0508 1.71721 10.4702 1.11855 11.1366C1.11855 11.1366 0 12.2029 0 14.5843C0 17.44 1.97716 18.9042 1.97716 18.9042C2.79441 19.5804 3.846 19.99 4.99409 19.99H7.57385C10.5396 19.99 12.9441 17.5968 12.9441 14.645V5.42513C12.9441 2.47334 10.5396 0.0801646 7.57385 0.0801646Z"/></g></g>
+          <g class="logo__mid" style="--i:0;--r:10"><path d="M26.0949 16.6972C25.13 18.3553 23.7259 18.8669 22.818 19.106C22.373 19.2236 21.4592 19.2178 21.0043 19.1335C20.959 19.1256 20.9137 19.1158 20.8665 19.1041C20.2718 18.9571 20.0197 18.6023 20.0197 17.7869V0.0801646H15.4726V19.99H26.1284V16.707C26.1284 16.6874 26.1008 16.6815 26.091 16.6991L26.0949 16.6972Z"/></g>
+          <g class="logo__mid" style="--i:1;--r:9"><path d="M39.228 16.6972C38.2631 18.3554 36.859 18.8669 35.9512 19.106C35.5061 19.2236 34.5924 19.2178 34.1375 19.1335C34.0922 19.1256 34.0469 19.1158 33.9996 19.1041C33.4049 18.9571 33.1528 18.6023 33.1528 17.7869V0.0762446H28.6057V19.99H39.2615V16.707C39.2615 16.6874 39.2339 16.6815 39.2241 16.6991L39.228 16.6972Z"/></g>
+          <g class="logo__mid" style="--i:2;--r:8"><path d="M54.6455 0.0801646H52.7215C49.7558 0.0801646 47.3513 2.47334 47.3513 5.42513V9.09232C47.3513 9.10604 47.3631 9.1178 47.3769 9.1178H48.8795C50.5435 9.1178 51.8944 7.77519 51.8944 6.11701V2.58114C51.8944 1.72854 52.5876 1.03861 53.4443 1.03861H53.9228C54.7794 1.03861 55.4726 1.72854 55.4726 2.58114V17.491C55.4726 18.3436 54.7794 19.0335 53.9228 19.0335H53.4443C52.5876 19.0335 51.8944 18.3436 51.8944 17.491V11.8873C51.8944 10.5623 52.9086 10.186 53.3458 10.086C53.3714 10.0802 53.3655 10.0508 53.3379 10.0508H50.6302C49.6613 10.0508 48.7889 10.4702 48.1902 11.1366C48.1902 11.1366 47.0736 12.2048 47.0736 14.5862C47.0736 17.442 49.0488 18.9061 49.0488 18.9061C49.8661 19.5823 50.9177 19.992 52.0658 19.992H54.6455C57.6113 19.992 60.0158 17.5988 60.0158 14.647V5.42513C60.0158 2.47334 57.6113 0.0801646 54.6455 0.0801646Z"/></g>
+          <g class="logo__mid" style="--i:3;--r:7"><path d="M73.523 1.15425C72.7058 0.476088 71.6522 0.0684045 70.5022 0.0684045H62.5463V19.992H70.5022C71.6522 19.992 72.7058 19.5823 73.523 18.9042C73.523 18.9042 75.5002 17.44 75.5002 14.5823C75.5002 13.1574 75.1004 12.0931 74.7794 11.4639C74.7794 11.4639 74.7715 11.4483 74.7578 11.4247C74.6652 11.2562 74.2595 10.5702 73.5191 10.137C73.4541 10.0978 73.3832 10.0645 73.3123 10.0312C73.3832 9.99784 73.4541 9.96256 73.5191 9.92532C74.2595 9.49216 74.6672 8.80615 74.7578 8.63759C74.7715 8.61211 74.7794 8.59643 74.7794 8.59643C75.1004 7.96923 75.5002 6.90494 75.5002 5.48001C75.5002 2.6223 73.523 1.15817 73.523 1.15817V1.15425ZM70.6439 2.52234V8.52979C70.6439 9.2746 70.1024 9.88808 69.3895 10.0155C69.3659 10.0194 69.3659 10.0527 69.3895 10.0566C70.1024 10.1821 70.6439 10.7975 70.6439 11.5423V17.5478C70.6439 18.3867 69.9626 19.0649 69.1217 19.0649H68.6156C67.7747 19.0649 67.0933 18.3867 67.0933 17.5498V2.51254C67.0933 1.6815 67.7708 1.00725 68.6057 1.00725H69.1296C69.9645 1.00725 70.642 1.6815 70.642 2.51254V2.52234H70.6439Z"/></g>
+          <g class="logo__mid" style="--i:4;--r:6"><path d="M85.2718 0.0664445H83.0898C80.1162 0.0664445 77.7058 2.4655 77.7058 5.42513V14.6294C77.7058 17.589 80.1162 19.988 83.0898 19.988H85.2718C88.2454 19.988 90.6558 17.589 90.6558 14.6294V5.42709C90.6558 2.46746 88.2454 0.0684045 85.2718 0.0684045V0.0664445ZM86.1107 17.5419C86.1107 18.375 85.4313 19.0512 84.5943 19.0512H84.0469C83.2099 19.0512 82.5305 18.375 82.5305 17.5419V2.5341C82.5305 1.7011 83.2099 1.02489 84.0469 1.02489H84.5943C85.4313 1.02489 86.1107 1.7011 86.1107 2.5341V17.5419Z"/></g>
+          <g class="logo__mid" style="--i:5;--r:5"><path d="M101.52 17.5419C101.52 18.375 100.841 19.0512 100.004 19.0512H99.4565C98.6195 19.0512 97.9401 18.375 97.9401 17.5419V0.0664445H93.1134V14.6294C93.1134 17.589 95.5238 19.988 98.4974 19.988H100.679C103.653 19.988 106.063 17.589 106.063 14.6294V0.0664445H101.516V17.54L101.52 17.5419Z"/></g>
+          <g class="logo__mid" style="--i:6;--r:4"><path d="M121.585 0.69757C121.585 0.672089 121.585 0.646609 121.585 0.619169V0.0664445H108.427V0.619169C108.427 0.644649 108.427 0.670129 108.427 0.69757C108.427 1.00137 108.427 1.94218 108.427 2.24598C108.427 2.82811 108.427 3.05351 108.427 3.63759C108.427 3.65719 108.452 4.02176 108.464 4.00412C108.937 3.22599 109.547 2.51646 110.311 2.02058C111.03 1.55606 111.881 1.09741 112.745 1.03665V17.0029C112.745 18.6513 114.088 19.988 115.744 19.988H117.241C117.255 19.988 117.267 19.9763 117.267 19.9626V1.03665C118.131 1.09741 118.982 1.55606 119.701 2.02058C120.467 2.51646 121.075 3.22599 121.548 4.00412C121.558 4.02176 121.585 4.01392 121.585 3.99432C121.585 3.41219 121.585 2.82811 121.585 2.24598C121.585 1.94218 121.585 1.00137 121.585 0.69757Z"/></g>
+          <g class="logo__mid" style="--i:7;--r:3"><path d="M136.82 0.0664445H129.252V16.215H129.258C129.258 16.2483 129.252 16.2817 129.252 16.315V19.9645C129.252 19.9782 129.263 19.99 129.277 19.99H130.774C132.43 19.99 133.773 18.6533 133.773 17.0049V2.5145C133.773 1.6815 134.453 1.00529 135.289 1.00529H135.863C136.699 1.00529 137.379 1.6815 137.379 2.5145V17.0029C137.379 18.6513 138.722 19.988 140.378 19.988H141.875C141.889 19.988 141.9 19.9763 141.9 19.9626V5.42709C141.9 2.46746 139.795 0.0684045 136.82 0.0684045V0.0664445Z"/></g>
+          <g class="logo__mid" style="--i:8;--r:2"><path d="M152.123 0.0664445H149.941C146.967 0.0664445 144.557 2.4655 144.557 5.42513V14.6294C144.557 17.589 146.967 19.988 149.941 19.988H152.123C155.096 19.988 157.507 17.589 157.507 14.6294V5.42709C157.507 2.46746 155.096 0.0684045 152.123 0.0684045V0.0664445ZM152.962 17.5419C152.962 18.375 152.282 19.0512 151.445 19.0512H150.898C150.061 19.0512 149.382 18.375 149.382 17.5419V2.5341C149.382 1.7011 150.061 1.02489 150.898 1.02489H151.445C152.282 1.02489 152.962 1.7011 152.962 2.5341V17.5419Z"/></g>
+          <g class="logo__mid" style="--i:9;--r:1"><path d="M159.86 16.9873C159.86 18.6454 161.211 19.99 162.877 19.99H164.382C164.395 19.99 164.407 19.9782 164.407 19.9645V0.0664445H159.86V16.9873Z"/></g>
+          <g class="logo__mid" style="--i:10;--r:0"><path d="M177.909 1.16209C177.091 0.483928 176.038 0.0762446 174.888 0.0762446H166.932V19.9998H171.479V2.52234C171.479 1.6913 172.156 1.01705 172.991 1.01705H173.515C174.35 1.01705 175.028 1.6913 175.028 2.52234V8.53763C175.028 9.28244 174.486 9.89592 173.773 10.0233C173.749 10.0272 173.749 10.0606 173.773 10.0645C174.486 10.1899 175.028 10.8054 175.028 11.5502V16.7932C175.028 16.8226 175.032 16.852 175.032 16.8814V16.9873H175.037C175.138 18.667 176.536 19.9998 178.249 19.9998H179.856C179.872 19.9998 179.884 19.988 179.884 19.9724V14.5902C179.884 13.1652 179.484 12.1009 179.163 11.4718C179.163 11.4718 179.155 11.4561 179.141 11.4326C179.049 11.264 178.643 10.578 177.903 10.1448C177.838 10.1056 177.767 10.0723 177.696 10.039C177.767 10.0057 177.838 9.9704 177.903 9.93316C178.643 9.5 179.051 8.81399 179.141 8.64543C179.155 8.61995 179.163 8.60427 179.163 8.60427C179.484 7.97707 179.884 6.91278 179.884 5.48785C179.884 2.63014 177.907 1.16601 177.907 1.16601L177.909 1.16209Z"/></g>
+          <g class="logo__s"><g class="logo__fold" style="transform-origin:180.21px 10px"><path d="M182.981 8.89435C183.584 9.56272 184.458 9.98412 185.433 9.98412H187.739C187.767 9.98412 187.777 9.94492 187.749 9.93512C187.552 9.8528 187.391 9.74108 187.269 9.63524C187.269 9.63524 187.265 9.63132 187.263 9.62936C187.243 9.61172 187.223 9.59408 187.204 9.57644C187.182 9.55684 187.162 9.53528 187.141 9.51568C187.123 9.49804 187.107 9.4804 187.091 9.46472C187.072 9.4412 187.05 9.41964 187.032 9.39612C187.011 9.36868 186.989 9.34124 186.969 9.31184L186.965 9.30792C186.8 9.06292 186.703 8.76891 186.703 8.45139V2.51058C186.703 1.65406 187.401 0.962171 188.259 0.962171H188.598C189.458 0.962171 190.154 1.65602 190.154 2.51058V6.06409C190.154 7.72814 191.508 9.0786 193.182 9.0786H194.693C194.707 9.0786 194.718 9.06684 194.718 9.05312V5.37025C194.718 2.40474 192.304 0.00176401 189.325 0.00176401H186.875C185.721 0.00176401 184.663 0.411407 183.844 1.09349C183.844 1.09349 183.499 1.34829 183.096 1.85594C182.369 2.77127 182.005 3.91787 182.005 5.08408V6.18365C182.005 6.8971 182.166 7.60858 182.511 8.23383C182.759 8.68267 182.981 8.89631 182.981 8.89631V8.89435Z"/><path d="M193.878 11.1033C193.275 10.4349 192.401 10.0135 191.426 10.0135H189.118C189.09 10.0135 189.082 10.0508 189.108 10.0625C189.307 10.1448 189.466 10.2566 189.59 10.3624C189.59 10.3624 189.594 10.3663 189.596 10.3683C189.616 10.3859 189.636 10.4036 189.655 10.4212C189.677 10.4408 189.697 10.4624 189.718 10.482C189.736 10.4996 189.752 10.5172 189.768 10.5329C189.787 10.5564 189.809 10.578 189.827 10.6015C189.848 10.629 189.87 10.6564 189.89 10.6858L189.894 10.6897C190.059 10.9347 190.156 11.2287 190.156 11.5463V17.4831C190.156 18.3397 189.529 19.0316 188.669 19.0316H188.33C187.469 19.0316 186.703 18.3377 186.703 17.4831V13.9296C186.703 12.2656 185.349 10.9151 183.675 10.9151H182.164C182.15 10.9151 182.139 10.9269 182.139 10.9406V14.6235C182.139 17.589 184.553 19.992 187.532 19.992H189.982C191.136 19.992 192.194 19.5823 193.013 18.9002C193.013 18.9002 194.998 17.4302 194.998 14.5627C194.998 12.1715 193.876 11.0974 193.876 11.0974L193.878 11.1033Z"/></g></g>
+        </svg>
+        <span class="logo__book">
+          <svg class="logo__leaf logo__leaf--l" viewBox="0 0 14.8 20" fill="currentColor"><path d="M28.4804 11.1051C27.8773 10.4363 27.0028 10.0147 26.0287 10.0147H23.3079C23.2794 10.0147 23.2729 10.043 23.3002 10.0496C23.7402 10.1509 24.7581 10.5299 24.7581 11.8599V17.4892C24.7581 18.3454 24.0609 19.0382 23.2017 19.0382H22.7212C21.861 19.0382 21.1649 18.3443 21.1649 17.4892V2.51076C21.1649 1.65459 21.8621 0.961821 22.7212 0.961821H23.2017C24.062 0.961821 24.7581 1.65568 24.7581 2.51076V6.06394C24.7581 7.72834 26.1141 9.07794 27.7865 9.07794H29.2968C29.3111 9.07794 29.3231 9.06595 29.3231 9.05179V5.36899C29.3209 2.40401 26.9065 0 23.9263 0H21.9945C21.8873 0 21.7811 0.00435706 21.6749 0.00980339L21.6848 0H15.9957L15.999 0.00544633C15.9224 0.00217853 15.8458 0 15.7692 0H13.8363C13.7597 0 13.6842 0.00217853 13.6087 0.00544633L13.613 0H7.92398L7.93055 0.00980339C7.82438 0.0032678 7.71822 0 7.61096 0H5.67922C2.69678 0 0.281279 2.40401 0.281279 5.36899V9.05179C0.281279 9.06595 0.293319 9.07794 0.307547 9.07794H1.81792C3.49027 9.07794 4.84632 7.72834 4.84632 6.06394V2.51076C4.84632 1.65459 5.5435 0.961821 6.40266 0.961821H6.88314C7.74339 0.961821 8.43948 1.65568 8.43948 2.51076V17.4892C8.43948 18.3454 7.7423 19.0382 6.88314 19.0382H6.40266C5.54241 19.0382 4.84632 18.3443 4.84632 17.4892V11.8599C4.84632 10.5299 5.86418 10.1509 6.30416 10.0496C6.33043 10.043 6.32386 10.0147 6.2965 10.0147H3.57564C2.60156 10.0147 1.72708 10.4363 1.12402 11.1051C1.12402 11.1051 0 12.1769 0 14.57C0 17.438 1.98537 18.9096 1.98537 18.9096C2.80623 19.5904 3.86349 20 5.01706 20H7.60768C10.5868 20 13.0023 17.596 13.0023 14.631V13.789H13.0045V2.51076C13.0045 1.65459 13.7017 0.961821 14.5609 0.961821H15.0402C15.9005 0.961821 16.5966 1.65568 16.5966 2.51076V5.30254C16.5966 5.32324 16.5977 5.34502 16.5977 5.36572C16.5977 5.36681 16.5977 5.3679 16.5977 5.37008V14.631C16.5977 17.596 19.0132 20 21.9923 20H24.5829C25.7376 20 26.7938 19.5893 27.6146 18.9086C27.6146 18.9086 29.6 17.438 29.6 14.57C29.6 12.178 28.4782 11.1051 28.4782 11.1051H28.4804Z"/></svg>
+          <svg class="logo__leaf logo__leaf--r" viewBox="14.8 0 14.8 20" fill="currentColor"><path d="M28.4804 11.1051C27.8773 10.4363 27.0028 10.0147 26.0287 10.0147H23.3079C23.2794 10.0147 23.2729 10.043 23.3002 10.0496C23.7402 10.1509 24.7581 10.5299 24.7581 11.8599V17.4892C24.7581 18.3454 24.0609 19.0382 23.2017 19.0382H22.7212C21.861 19.0382 21.1649 18.3443 21.1649 17.4892V2.51076C21.1649 1.65459 21.8621 0.961821 22.7212 0.961821H23.2017C24.062 0.961821 24.7581 1.65568 24.7581 2.51076V6.06394C24.7581 7.72834 26.1141 9.07794 27.7865 9.07794H29.2968C29.3111 9.07794 29.3231 9.06595 29.3231 9.05179V5.36899C29.3209 2.40401 26.9065 0 23.9263 0H21.9945C21.8873 0 21.7811 0.00435706 21.6749 0.00980339L21.6848 0H15.9957L15.999 0.00544633C15.9224 0.00217853 15.8458 0 15.7692 0H13.8363C13.7597 0 13.6842 0.00217853 13.6087 0.00544633L13.613 0H7.92398L7.93055 0.00980339C7.82438 0.0032678 7.71822 0 7.61096 0H5.67922C2.69678 0 0.281279 2.40401 0.281279 5.36899V9.05179C0.281279 9.06595 0.293319 9.07794 0.307547 9.07794H1.81792C3.49027 9.07794 4.84632 7.72834 4.84632 6.06394V2.51076C4.84632 1.65459 5.5435 0.961821 6.40266 0.961821H6.88314C7.74339 0.961821 8.43948 1.65568 8.43948 2.51076V17.4892C8.43948 18.3454 7.7423 19.0382 6.88314 19.0382H6.40266C5.54241 19.0382 4.84632 18.3443 4.84632 17.4892V11.8599C4.84632 10.5299 5.86418 10.1509 6.30416 10.0496C6.33043 10.043 6.32386 10.0147 6.2965 10.0147H3.57564C2.60156 10.0147 1.72708 10.4363 1.12402 11.1051C1.12402 11.1051 0 12.1769 0 14.57C0 17.438 1.98537 18.9096 1.98537 18.9096C2.80623 19.5904 3.86349 20 5.01706 20H7.60768C10.5868 20 13.0023 17.596 13.0023 14.631V13.789H13.0045V2.51076C13.0045 1.65459 13.7017 0.961821 14.5609 0.961821H15.0402C15.9005 0.961821 16.5966 1.65568 16.5966 2.51076V5.30254C16.5966 5.32324 16.5977 5.34502 16.5977 5.36572C16.5977 5.36681 16.5977 5.3679 16.5977 5.37008V14.631C16.5977 17.596 19.0132 20 21.9923 20H24.5829C25.7376 20 26.7938 19.5893 27.6146 18.9086C27.6146 18.9086 29.6 17.438 29.6 14.57C29.6 12.178 28.4782 11.1051 28.4782 11.1051H28.4804Z"/></svg>
+        </span>
+      </span>
+    </a>
+    <nav class="lang" data-t="lang" aria-label="Language">
+      <button class="lang__current" type="button" aria-expanded="false" aria-controls="lang-menu">[&nbsp;&nbsp;EN&nbsp;&nbsp;]</button>
+      <ul class="lang__menu" id="lang-menu">
+          <li><a href="jp/index.html" hreflang="ja" lang="ja">JP</a></li>
+          <li><a href="kr/index.html" hreflang="ko" lang="ko">KR</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- scroll position (the page's own scrollbar is hidden) -->
+  <div class="progress" aria-hidden="true"><span class="progress__thumb"></span></div>
+
+  <main>
+    <!-- 00_Key Visual: full viewport, the design's crop kept centered -->
+    <section class="kv">
+      <div class="kv__media">
+        <img src="img/kv-02-0644@2x.webp" srcset="img/kv-02-0644@1x.webp 2048w, img/kv-02-0644@2x.webp 4096w" sizes="(max-aspect-ratio: 1440/990) 342vh, 235vw" width="4096" height="3318" alt="" fetchpriority="high" />
+      </div>
+      <div class="kv__text">
+        <p class="kv__line" style="--b:444;--i:0">CUT 01. URBAN EXOSKELETON</p>
+        <p class="kv__line" style="--b:414;--i:1">Eastern Structure</p>
+        <p class="kv__line" style="--b:301;--i:2">All About Noirs</p>
+        <p class="kv__line" style="--b:50;--i:3">Enclosed, Not Exposed</p>
+      </div>
+    </section>
+
+    <!-- 02_Collection Info -->
+    <section class="intro reveal">
+      <h2 class="title">WE DESIGNED URBAN EXOSKELETON</h2>
+      <div class="body intro__body" data-t="intro" style="--w:684;--box:684">
+        <p><span class="ln">We don’t reveal the body — we quietly enclose it. Layered forms and negative space shape a silhouette</span> <span class="ln">that completes itself in motion, from behind. This balance comes from the curves and emptiness of Eastern architecture.</span> <span class="ln">Our black is not a single color. It is a depth expressed through layering — one that shifts with light.</span> <span class="ln">A restrained silhouette casts a different shadow with every movement.</span></p>
+        <p class="gap gap--half" aria-hidden="true"></p>
+        <p><span class="ln">An exoskeleton that quietly holds you, within the city.</span> <span class="ln">An urban techwear brand for those who live within the city. All About Noirs.</span></p>
+      </div>
+    </section>
+
+    <!-- 01_AANS Info: full-bleed image with overlaid copy -->
+    <section class="full">
+      <div class="crop full__media" style="--fw:1440;--fh:816">
+        <img src="img/04-1633_B-1@2x.webp" srcset="img/04-1633_B-1@1x.webp 1406w, img/04-1633_B-1@2x.webp 2813w" sizes="100vw" width="2813" height="1594" alt="" loading="lazy" />
+      </div>
+      <div class="body full__text" data-t="full" style="--tw:569">
+        <p><span class="ln">The signature ANGOK cape panel comes from the gently curved eaves of a roof. As the eave</span> <span class="ln">shields a house from wind and rain, the curve is carried onto the back of the garment —</span> <span class="ln">covering the back, the body’s most unguarded surface.</span></p>
+        <p class="gap gap--half" aria-hidden="true"></p>
+        <p><span class="ln">An exoskeleton is a structure that supports and protects the body from the outside.</span> <span class="ln">In the city, a battlefield of the senses, it is what quietly encloses you. That is what</span> <span class="ln">All About Noirs means by “exoskeleton” in CUT 01.</span></p>
+      </div>
+    </section>
+
+    <!-- Lookbook grid -->
+    <section class="pair">
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/02-0533_A-1@2x.webp" srcset="img/02-0533_A-1@1x.webp 704w, img/02-0533_A-1@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/02-0786_A-1@2x.webp" srcset="img/02-0786_A-1@1x.webp 704w, img/02-0786_A-1@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+    </section>
+    <section class="pair">
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/03-0896_A-1@2x.webp" srcset="img/03-0896_A-1@1x.webp 704w, img/03-0896_A-1@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/01-0074_A-1@2x.webp" srcset="img/01-0074_A-1@1x.webp 704w, img/01-0074_A-1@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="cut reveal" data-t="cut">
+      <h2 class="title">CUT 01. URBAN EXOSKELETON</h2>
+      <div class="body cut__body">
+        <p><span class="ln">Every All About Noirs collection begins with a single scene. That scene comes from the world of the brand film.</span> <span class="ln">The city is a battlefield of the senses. There is too much to see, and too much to hear.</span> <span class="ln">Amid the overflow, each person is seized by one sense — and the seized sense loses its rhythm.</span></p>
+      </div>
+    </section>
+
+    <section class="pair">
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/07-2338_B-3@2x.webp" srcset="img/07-2338_B-3@1x.webp 704w, img/07-2338_B-3@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/07-2308_B-2@2x.webp" srcset="img/07-2308_B-2@1x.webp 704w, img/07-2308_B-2@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+    </section>
+
+    <!-- Story rows: image left, copy right -->
+    <section class="story">
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/08-2652_A-1@2x.webp" srcset="img/08-2652_A-1@1x.webp 704w, img/08-2652_A-1@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+      <div class="story__text reveal" data-t="story-1" style="--st:417">
+        <h3 class="story__title"><span class="en">EASTERN STRUCTURE</span></h3>
+        <div class="body">
+          <p><span class="ln">The eave of an old roof, gently curved,</span> <span class="ln">drawing a line between itself and the sky.</span> <span class="ln">That ease in the curve, carried into every line AANS draws.</span></p>
+        </div>
+      </div>
+    </section>
+    <section class="story">
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/09-2673_B-1@2x.webp" srcset="img/09-2673_B-1@1x.webp 704w, img/09-2673_B-1@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+      <div class="story__text reveal" data-t="story-2" style="--st:426">
+        <h3 class="story__title"><span class="en">URBAN ENCLOSURE</span></h3>
+        <div class="body">
+          <p><span class="ln">The city is never still — always a gaze, always a sound passing through.</span> <span class="ln">In that gap, a city of one’s own: cold, yet safely held.</span></p>
+        </div>
+      </div>
+    </section>
+    <section class="story">
+      <div class="crop thumb reveal" style="--fw:704;--fh:938.667">
+        <img src="img/08-2608_B-2@2x.webp" srcset="img/08-2608_B-2@1x.webp 704w, img/08-2608_B-2@2x.webp 1408w" sizes="(max-width: 767px) 100vw, 50vw" width="1408" height="1877" alt="" loading="lazy" />
+      </div>
+      <div class="story__text reveal" data-t="story-3" style="--st:429">
+        <h3 class="story__title"><span class="en">NOIR DENSITY</span></h3>
+        <div class="body">
+          <p><span class="ln">What looks empty is darkness layered, time pressed into density.</span> <span class="ln">Look closer, and black reveals itself. That is noir.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing: collection carousel + launch info over the stencil graphic -->
+    <section class="outro">
+      <div class="outro__graphic" aria-hidden="true">
+        <img src="img/footer-graphic@2x.webp" srcset="img/footer-graphic@1x.webp 1768w, img/footer-graphic@2x.webp 3536w" sizes="(max-width: 767px) 180vw, 123vw" width="3536" height="3536" alt="" loading="lazy" />
+      </div>
+
+      <div class="collection">
+        <h2 class="title collection__title">URBAN EXOSKELETON Collection <small class="collection__sub">Pop-up Exclusive Preview</small></h2>
+        <ul class="collection__track" data-drag-scroll data-lenis-prevent-horizontal>
+          <li class="product" style="--pt:1.94%;--pb:1.2%;--px:0.83px">
+            <div class="product__media"><img src="img/product-1@2x.webp" srcset="img/product-1@1x.webp 290w, img/product-1@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">SHELTER 3LAYER JACKET</p>
+          </li>
+          <li class="product" style="--pt:1.94%;--pb:1.2%;--px:1.33px">
+            <div class="product__media"><img src="img/product-2@2x.webp" srcset="img/product-2@1x.webp 290w, img/product-2@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">SHELTER 3LAYER JUMPER</p>
+          </li>
+          <li class="product" style="--pt:0%;--pb:-1.17%;--px:-7.17px">
+            <div class="product__media"><img src="img/product-3@2x.webp" srcset="img/product-3@1x.webp 290w, img/product-3@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">SHELTER 3LAYER COAT</p>
+          </li>
+          <li class="product" style="--pt:-1.2%;--pb:2.41%;--px:-4.67px">
+            <div class="product__media"><img src="img/product-4@2x.webp" srcset="img/product-4@1x.webp 290w, img/product-4@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">EXOSHELL GOOSE DOWN PARKA</p>
+          </li>
+          <li class="product" style="--pt:-4.63%;--pb:3.46%;--px:-5.67px">
+            <div class="product__media"><img src="img/product-5@2x.webp" srcset="img/product-5@1x.webp 290w, img/product-5@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">FRAME WOVEN S/S TEE</p>
+          </li>
+          <li class="product" style="--pt:-4.29%;--pb:-0.55%;--px:-4.67px">
+            <div class="product__media"><img src="img/product-6@2x.webp" srcset="img/product-6@1x.webp 290w, img/product-6@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">FRAME WAFFLE L/S TEE</p>
+          </li>
+          <li class="product" style="--pt:-8.09%;--pb:-2.58%;--px:0.83px">
+            <div class="product__media"><img src="img/product-7@2x.webp" srcset="img/product-7@1x.webp 290w, img/product-7@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">FRAME TWILL HOODIE</p>
+          </li>
+          <li class="product" style="--pt:-0.12%;--pb:0.9%;--px:5.33px">
+            <div class="product__media"><img src="img/product-8@2x.webp" srcset="img/product-8@1x.webp 290w, img/product-8@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">SHELTER NYLON TROUSERS</p>
+          </li>
+          <li class="product" style="--pt:-0.12%;--pb:0.9%;--px:5.83px">
+            <div class="product__media"><img src="img/product-9@2x.webp" srcset="img/product-9@1x.webp 290w, img/product-9@2x.webp 580w" sizes="(max-width: 767px) 40vw, 290px" width="580" height="774" alt="" loading="lazy" /></div>
+            <p class="product__name">SHELTER CORDUROY TROUSERS</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="launch reveal">
+        <div class="launch__lines">
+          <p>LAUNCH POP-UP</p>
+          <p>CUT 01. URBAN EXOSKELETON</p>
+          <p>2026. 10.24 SAT - 11.01 SUN</p>
+        </div>
+        <p class="launch__place">RAND OMOTESANDO TOKYO</p>
+      </div>
+
+      <footer class="footer">
+        <p class="footer__copy">© 2026 All About Noirs</p>
+        <button class="footer__top" type="button" data-to-top>
+          Go to top
+          <svg width="8" height="9" viewBox="0 0 7 8" fill="none" aria-hidden="true"><path d="M3.5 7.5V1M1 3.5 3.5 1 6 3.5" stroke="currentColor" stroke-width="0.8"/></svg>
+        </button>
+      </footer>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+  <script src="main.js?v=20261001102632"></script>
+  <script type="module" src="intro/intro.js?v=20261001102632" onerror="window.aansSkipIntro && window.aansSkipIntro()"></script>
+</body>
+</html>

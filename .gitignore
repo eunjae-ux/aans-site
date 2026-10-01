@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__/
+venv/
+.venv/
+# original Figma exports (~70MB) stay local; images.py turns them into img/*.webp
+tools/orig/
+.vercel

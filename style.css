@@ -1,0 +1,1373 @@
+/* All About Noirs — A_Home (Figma 2597:1291 KR / 2597:1799 EN / 2597:1999 JP).
+   Designed at 1440px. Three layouts:
+     desktop  ≥1024px  the design, vertical rhythm scaled by --s (design px × vw)
+     tablet   768–1023 two columns kept, copy reflows below / beside images
+     mobile   ≤767px   single column
+   Copy is authored as the design's line breaks (.ln spans). On desktop each
+   design line is its own block (and may still wrap if the column gets
+   narrower than the design); on tablet/mobile the lines flow as paragraphs.
+   No copy uses nowrap, so nothing is ever clipped. */
+
+:root {
+  --black: #000;
+  --white: #fff;
+  --gray01: #e8e8e8;
+  /* 100vw includes a classic (non-overlay) scrollbar; main.js puts its width
+     in --sbw so the design scale uses the real page width */
+  --s: calc((100vw - var(--sbw, 0px)) / 1440);
+  --gutter: 20px;
+  --font-en: "Oswald", sans-serif;
+  --font-kr: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+}
+
+/* Pretendard has no kana/kanji, so Japanese falls through to Noto Sans JP. */
+html[lang="ja"] {
+  --font-kr: "Pretendard", "Noto Sans JP", "Hiragino Sans", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Background noise from the design's page rectangle (Figma NOISE effect:
+   multitone, size 0.5, density 100%, #fff @15%, opacity 25%). The tile was
+   generated to match Figma's render of it: black lifted to ~#101010 with
+   ±4.5 per-pixel grain. 256px tile shown at 128px = half-pixel grain on 2x. */
+/* Text selection: white highlight, dark text (instead of the system blue). */
+::selection {
+  background: #fff;
+  color: #111;
+}
+
+html {
+  background: var(--black) url("img/noise@2x.webp") repeat 0 0 / 128px 128px;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  /* No visible page scrollbar: the page scrolls with Lenis, and a bar
+     appearing when the intro hands over would narrow the page and nudge the
+     key visual sideways. Wheel / trackpad / keyboard scrolling still work. */
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  color: var(--gray01);
+  font-family: var(--font-kr);
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+}
+
+html[lang="ko"] body {
+  word-break: keep-all;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Lenis smooth scrolling (lenis.css) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-horizontal] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ---------- Shared ---------- */
+
+/* Image frame at its Figma aspect ratio; the WebP is already cropped to the
+   frame, so it just covers it. */
+.crop {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--fw) / var(--fh);
+}
+
+.crop > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.title {
+  font-family: var(--font-en);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 24px;
+  color: var(--gray01);
+}
+
+/* Text xs/Regular: 12px, one line every 24px (12px line + 12px gap). */
+.body {
+  font-size: 12px;
+  line-height: 24px;
+  color: var(--gray01);
+}
+
+.body .ln {
+  display: block;
+}
+
+.body .gap {
+  height: 24px;
+}
+
+.body .gap--half {
+  height: 12px;
+}
+
+/* Figma sets body copy as 12px lines + 12px paragraph spacing; here each
+   line is one 24px line box with the type centred in it. Pulling the block
+   in by 6px top and bottom lands every line exactly where Figma draws it and
+   gives the block Figma's height, so the spacing around it matches too.
+   (.full__text is positioned from the bottom separately.) */
+@media (min-width: 768px) {
+  .intro__body,
+  .cut__body,
+  .story__text .body {
+    margin-block: -6px;
+  }
+}
+
+/* EN body copy (every 12px block) is set in Inter in the design;
+   KR / JP stay in Pretendard */
+html[lang="en"] .body {
+  font-family: "Inter", var(--font-kr);
+}
+
+/* Scroll reveal: a slow rise + fade on a long ease-out, so it settles
+   gently instead of snapping. Images also ease down from a slight zoom inside
+   their frame, and the second image of a pair trails the first. */
+.reveal {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translate3d(0, 56px, 0);
+  transition:
+    opacity 1.8s cubic-bezier(0.33, 0, 0.2, 1) var(--delay, 0s),
+    transform 2.2s var(--ease-out) var(--delay, 0s);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.thumb.reveal > img {
+  transform: scale(1.08);
+  transition: transform 2.8s var(--ease-out) var(--delay, 0s);
+}
+
+.thumb.reveal.is-visible > img {
+  transform: none;
+}
+
+.pair > .reveal:nth-child(2),
+.story > .story__text {
+  --delay: 0.18s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .thumb.reveal > img {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  /* viewport-fit=cover: the page runs under the status bar / notch, so the
+     GNB keeps its gutter inside the safe area */
+  padding:
+    calc(var(--gutter) + env(safe-area-inset-top, 0px))
+    calc(var(--gutter) + env(safe-area-inset-right, 0px))
+    var(--gutter)
+    calc(var(--gutter) + env(safe-area-inset-left, 0px));
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+.header a,
+.header button {
+  pointer-events: auto;
+}
+
+.header__logo {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.header__logo .logo {
+  position: relative;
+  display: block;
+  width: 175.5px; /* 18px tall */
+  aspect-ratio: 195 / 20;
+  color: #fff;
+}
+
+.logo__word {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* the box the middle letters slide out of */
+}
+
+/* The symbol, split at its spine into two leaves hinged there. */
+.logo__book {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(29.6 / 195 * 100%);
+  display: flex;
+  perspective: 70px;
+}
+
+.logo__leaf {
+  display: block;
+  width: 50%;
+  height: 100%;
+}
+
+.logo__leaf--l {
+  transform-origin: 100% 50%;
+  transform: rotateY(90deg);
+}
+
+.logo__leaf--r {
+  transform-origin: 0 50%;
+  transform: rotateY(-90deg);
+}
+
+/* Scroll morph (main.js toggles .is-compact): ALL ABOUT NOIRS → A+S symbol.
+   Closing: the middle letters lift out one by one from the S's side while the
+   S glides to the A; both fold shut into the spine like a book closing, then
+   the symbol opens out of the spine like a book laid open.
+   Opening: the book shuts, A and S unfold, the S heads back and the letters
+   drop in behind it. */
+.logo__mid {
+  transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1) calc(0.75s + var(--i) * 0.045s);
+}
+
+.logo__s {
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.25, 1) 0.5s;
+}
+
+.logo__fold {
+  transition: transform 0.45s cubic-bezier(0.2, 0.6, 0.3, 1) 0.4s;
+}
+
+.logo__leaf {
+  transition: transform 0.4s cubic-bezier(0.6, 0, 0.9, 0.5);
+}
+
+.header.is-compact .logo__mid {
+  transform: translateY(-21px);
+  transition-delay: calc(var(--r) * 0.035s);
+}
+
+.header.is-compact .logo__s {
+  transform: translateX(-165.41px);
+  transition-delay: 0.12s;
+}
+
+.header.is-compact .logo__fold {
+  transform: scaleX(0);
+  transition: transform 0.4s cubic-bezier(0.6, 0, 0.9, 0.5) 0.62s;
+}
+
+.header.is-compact .logo__leaf {
+  transform: none;
+  transition: transform 1s cubic-bezier(0.15, 0.75, 0.25, 1) 1.02s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo__mid,
+  .logo__s,
+  .logo__fold,
+  .logo__leaf {
+    transition: none !important;
+  }
+}
+
+/* Language switcher: the active language shows as "[  EN  ]"; the list below
+   holds only the other languages (no brackets), centered under the label. */
+.lang {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lang__current,
+.lang__menu a {
+  font-family: var(--font-en);
+  font-size: 14px;
+  line-height: normal;
+  color: var(--white);
+  background: none;
+  border: 0;
+  white-space: pre;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lang__menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0.25s;
+}
+
+.lang.is-open .lang__menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.lang__menu a:hover {
+  opacity: 0.7;
+}
+
+/* ---------- 00 Key Visual ---------- */
+
+/* Fills the viewport at any size. The photo is sized like the design
+   (3390px box on a 1440×990 frame) but scaled by whichever of width/height
+   needs more, and pinned so the design's frame centre (36.02%, 28.37% of the
+   photo) stays at the viewport centre, so the photo always covers the screen.
+   Motion:
+     load   — the photo settles from a slow zoom-out, copy lines rise in turn
+     scroll — the photo drifts down slower than the page (parallax); the copy
+              stays put and scrolls with the page. --kv-p: 0 → 1 over the KV. */
+.kv {
+  --kv-p: 0;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: var(--black);
+}
+
+.kv__media {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, calc(var(--kv-p) * 30%), 0);
+  will-change: transform;
+}
+
+/* The photo's focal point (--kv-fx/--kv-fy, as fractions of the image) is
+   pinned to the centre of the screen. Desktop follows the design (3390px box
+   at 1440 × 990); mobile zooms out to keep the whole head in frame — the
+   focal point moves onto the face and the photo is just big enough to cover
+   the screen around it. intro/intro.js places its photo the same way. */
+.kv__media > img {
+  --kv-fx: 36.02%;
+  --kv-fy: 28.37%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(calc(3390 / 1440 * 100vw), calc(3390 / 990 * 100svh));
+  max-width: none;
+  height: auto;
+  aspect-ratio: 4096 / 3318;
+  transform-origin: var(--kv-fx) var(--kv-fy);
+  transform: translate(calc(-1 * var(--kv-fx)), calc(-1 * var(--kv-fy))) scale(1.14);
+  opacity: 0;
+  transition:
+    transform 3.2s var(--ease-out),
+    opacity 1.6s cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+.kv.is-ready .kv__media > img {
+  transform: translate(calc(-1 * var(--kv-fx)), calc(-1 * var(--kv-fy))) scale(1);
+  opacity: 1;
+}
+
+.kv__text {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-en);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gray01);
+  pointer-events: none;
+}
+
+/* Lines are pinned from the bottom: the last one always sits 50px above the
+   bottom edge, the others keep the design's spacing above it (--b = px from
+   the bottom to each line's bottom, taken from the 1440×990 design). */
+.kv__line {
+  position: absolute;
+  left: calc(916 / 1440 * 100%);
+  right: calc(var(--gutter) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--b) * 1px);
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 1.4s ease calc(0.9s + var(--i) * 0.14s),
+    transform 1.8s var(--ease-out) calc(0.9s + var(--i) * 0.14s);
+}
+
+.kv.is-ready .kv__line {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kv__media {
+    transform: none;
+  }
+
+  .kv__media > img,
+  .kv__line {
+    transition: none;
+  }
+}
+
+/* ---------- 02 Collection Info ---------- */
+
+.intro {
+  width: 746px;
+  max-width: calc(100% - var(--gutter) * 2);
+  margin: calc(130 * var(--s)) auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+
+.intro__body {
+  width: calc(var(--w, 560) * 1px);
+  max-width: 100%;
+  text-align: left;
+}
+
+/* The design centres a --box wide column and lets the (wider) text run out
+   of its right side; shifting the centred text by the overhang reproduces
+   the same left edge (KR/JP x=450, EN x=379). */
+@media (min-width: 1024px) {
+  .intro__body {
+    margin-left: calc((var(--w, 560) - var(--box, 560)) * 1px);
+  }
+}
+
+/* ---------- 01 AANS Info (full image) ---------- */
+
+.full {
+  position: relative;
+  margin-top: calc(80 * var(--s));
+}
+
+/* Anchored to the bottom (50px up in all three designs) so extra wrapped
+   lines grow upward over the image instead of spilling past it. */
+/* Starts at x=816 like the design; on narrower desktops it slides left
+   rather than squeezing, so the design's line breaks never re-wrap. */
+.full__text {
+  position: absolute;
+  left: min(calc(816 / 1440 * 100%), calc(100% - var(--tw, 538) * 1px - 8px - var(--gutter)));
+  /* last line's text 50px above the photo's bottom edge: the 24px line box
+     centres the 12px type, so the box itself sits 5px lower (45px) */
+  bottom: 45px;
+  width: calc(var(--tw, 538) * 1px + 8px);
+  max-width: calc(100% - var(--gutter) * 2);
+}
+
+/* ---------- Lookbook pairs ---------- */
+
+/* every image row (pairs and stories) shares one grid: 10px from the left
+   edge, 10px between images, 10px from the right edge */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 10px;
+  margin-top: 10px;
+}
+
+.cut {
+  width: fit-content;
+  max-width: calc(100% - var(--gutter) * 2);
+  margin: calc(130 * var(--s)) auto calc(80 * var(--s));
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cut .title {
+  text-align: center;
+}
+
+/* KR copy wraps inside the design's 472px column; EN/JP size to their lines. */
+.cut--fixed {
+  width: 472px;
+}
+
+/* ---------- Story rows ---------- */
+
+.story {
+  display: grid;
+  /* image at x=10, exactly like the pair rows' left image (same width at
+     any screen size: (100% − 3 × 10px) / 2); copy at x=915, ~429px below the
+     image top. The 200px gap gives way first on narrower desktops so copy
+     lines never re-wrap. */
+  grid-template-columns: 10px calc((100% - 30px) / 2) minmax(24px, calc(200 / 1440 * 100%)) minmax(max-content, 1fr);
+  align-items: start;
+  margin-top: 10px;
+}
+
+.story > .thumb {
+  grid-column: 2;
+}
+
+.story__text {
+  grid-column: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: calc(var(--st, 429) * var(--s));
+  padding-right: var(--gutter);
+}
+
+.story__title {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--gray01);
+}
+
+.story__title .en {
+  font-family: var(--font-en);
+  font-weight: 500; /* Oswald Medium */
+}
+
+/* ---------- Outro: collection + launch + footer ---------- */
+
+.outro {
+  position: relative;
+  overflow: hidden;
+  /* same 130 above the title as WE DESIGNED… and CUT 01. */
+  margin-top: calc(130 * var(--s));
+  isolation: isolate;
+}
+
+/* "그래픽-최종 1": 1768px square, 50% black overlay, faded in from the top
+   by a #0a100d gradient that starts 158px above it. */
+.outro__graphic {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: calc(-802 * var(--s));
+  width: calc(1768 * var(--s));
+  max-width: none;
+  aspect-ratio: 1;
+  transform: translateX(calc(-50% - 20 * var(--s)));
+}
+
+.outro__graphic img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.outro__graphic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.outro__graphic::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: calc(-158 / 1768 * 100%);
+  height: calc(572 / 1768 * 100%);
+  background: linear-gradient(to bottom, #0a100d, rgba(0, 0, 0, 0));
+}
+
+.collection {
+  padding-left: 12px;
+}
+
+.collection__title {
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  padding-right: 12px;
+}
+
+/* "Pop-up Exclusive Preview": 12px on the title's 24px line, same baseline */
+.collection__sub {
+  font-size: 12px;
+  line-height: 0; /* sits on the title's baseline without growing its line */
+  white-space: nowrap;
+}
+
+.collection__track {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding-right: 12px;
+  scrollbar-width: none;
+  user-select: none;
+  /* horizontal touch is handled in main.js (card-by-card); vertical stays native */
+  touch-action: pan-y;
+}
+
+/* Desktop: the system cursor gives way to a large arrow (main.js). */
+.collection__track.has-arrow,
+.collection__track.has-arrow * {
+  cursor: none;
+}
+
+/* Same glyph as the reference (biancobian.co): a 30px light serif "←",
+   turned around for "→", growing in from nothing. Plain #E8E8E8, no blend. */
+.track-arrow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.track-arrow__glyph {
+  display: block;
+  color: var(--gray01);
+  font-family: Georgia, Times, "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1;
+  /* as on the reference: only the size eases (0.4s in / out); switching
+     sides turns the arrow round at once */
+  scale: 0;
+  rotate: 0deg;
+  transition: scale 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.track-arrow.is-on .track-arrow__glyph {
+  scale: 1;
+}
+
+.track-arrow.is-right .track-arrow__glyph {
+  rotate: 180deg;
+}
+
+.collection__track::-webkit-scrollbar {
+  display: none;
+}
+
+.product {
+  flex: 0 0 314.2px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.product__media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 260 / 340;
+  /* gradient box is 464px tall against a ~399px card */
+  background: linear-gradient(to bottom, #787878 58%, #343434 116%);
+}
+
+/* Figma NOISE on the card background (monotone, #000 @25%, size 0.5,
+   density 100%): measured on Figma's render as ~13% darkening with ±3.6%
+   grain. It sits on the background only — under the product photo. */
+.product__media::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("img/noise-dark@2x.webp") repeat 0 0 / 128px 128px;
+  pointer-events: none;
+}
+
+.product__media img {
+  position: absolute;
+  top: var(--pt);
+  bottom: var(--pb);
+  left: calc(50% + var(--px));
+  aspect-ratio: 2880 / 3840;
+  width: auto;
+  height: calc(100% - var(--pt) - var(--pb));
+  max-width: none;
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.product__name {
+  font-family: var(--font-en);
+  font-weight: 300;
+  font-size: 14px;
+  line-height: normal;
+  color: var(--gray01);
+}
+
+.launch {
+  min-height: 400px;
+  margin-top: calc(166 * var(--s));
+  padding: 0 var(--gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  font-family: var(--font-en);
+  font-weight: 500;
+  text-align: center;
+}
+
+.launch__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 22px;
+  line-height: 28px;
+  color: var(--gray01);
+  text-transform: uppercase;
+}
+
+.launch__place {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+  color: var(--gray01);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  /* clear of the home indicator / notch (viewport-fit=cover) */
+  padding:
+    var(--gutter)
+    calc(var(--gutter) + env(safe-area-inset-right, 0px))
+    calc(var(--gutter) + env(safe-area-inset-bottom, 0px))
+    calc(var(--gutter) + env(safe-area-inset-left, 0px));
+  margin-top: calc(69 * var(--s));
+}
+
+/* copyright on the left, "Go to top" on the right, same type */
+.footer__copy,
+.footer__top {
+  font-family: var(--font-en);
+  font-size: 12px;
+  line-height: normal;
+  color: var(--gray01);
+}
+
+.footer__top {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.footer__top svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer__top:hover svg {
+  transform: translateY(-2px);
+}
+
+/* ---------- Tablet + mobile ---------- */
+
+@media (max-width: 1023px) {
+  /* KR design lines are whole sentences, so they reflow as paragraphs.
+     EN/JP keep the design's line breaks at every width: each design line
+     still starts on its own line and only wraps if the screen is too narrow. */
+  html[lang="ko"] .body .ln {
+    display: inline;
+  }
+
+  html[lang="ko"] .body .gap {
+    height: 12px;
+  }
+
+  .intro {
+    margin-top: 120px;
+  }
+
+  .full {
+    margin-top: 72px;
+  }
+
+
+  .cut {
+    margin: 120px auto 64px;
+  }
+
+  /* image column = the pair rows' image (half of the row) in every story and
+     language; a design line longer than the copy column wraps inside it */
+  .story {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+    padding: 0 10px;
+    align-items: center;
+  }
+
+  .story > .thumb,
+  .story__text {
+    grid-column: auto;
+  }
+
+  .story__text {
+    padding: 32px 20px;
+  }
+
+  .outro {
+    margin-top: 120px;
+  }
+
+  .product {
+    flex-basis: 260px;
+  }
+
+  .launch {
+    min-height: 0;
+    margin-top: 0;
+    padding-top: 160px;
+    padding-bottom: 72px;
+  }
+
+  .footer {
+    margin-top: 0;
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 767px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .header__logo .logo {
+    width: min(175.5px, 43.2vw);
+  }
+
+  /* focal point on the face; the photo is 1.8 × the screen height, close in
+     on the face (the hair's back edge runs off the left side), and at least
+     wide enough to cover the left edge (0.5 / 0.38) */
+  .kv__media > img {
+    --kv-fx: 38%;
+    --kv-fy: 30%;
+    width: max(calc(0.5 / 0.38 * 100vw), calc(1.8 * 4096 / 3318 * 100svh));
+  }
+
+  /* Same layout as the web: the copy block starts at x = 916/1440 (moving
+     left only as far as its longest line needs), and the lines keep the
+     design's spacing (bottoms 444 / 414 / 301 / 50 on a 990px-tall screen),
+     scaled to the screen height. */
+  .kv__text {
+    --u: calc(100svh / 990);
+    display: grid;
+    grid-template-columns: minmax(0, calc(916 / 1440 * 100%)) max-content;
+    align-content: end;
+    padding: 0 calc(var(--gutter) + env(safe-area-inset-right, 0px)) calc(50 * var(--u)) 0;
+  }
+
+  .kv__line {
+    position: static;
+    grid-column: 2;
+  }
+
+  /* gap between lines = difference of their bottoms − one line box */
+  .kv__line:nth-child(2) { margin-top: max(2px, calc((444 - 414) * var(--u) - 1.7em)); }
+  .kv__line:nth-child(3) { margin-top: max(16px, calc((414 - 301) * var(--u) - 1.7em)); }
+  .kv__line:nth-child(4) { margin-top: max(32px, calc((301 - 50) * var(--u) - 1.7em)); }
+
+  .title {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .body {
+    font-size: 13px;
+    line-height: 22px;
+  }
+
+  .intro {
+    margin-top: 96px;
+  }
+
+  .intro .title {
+    text-align: left;
+    align-self: stretch;
+  }
+
+  /* Too narrow to lay the copy over the photo: it moves below it (above, it
+     ran straight on from the intro copy), with room before the next images. */
+  .full {
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+  }
+
+  .full__text {
+    position: static;
+    width: auto;
+    max-width: none;
+    padding: 24px var(--gutter) 48px;
+  }
+
+  .pair {
+    grid-template-columns: 1fr;
+  }
+
+  .cut {
+    margin: 96px auto 48px;
+  }
+
+  .cut .title {
+    text-align: left;
+  }
+
+  .story {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .story__text {
+    padding: 24px 6px 48px;
+    gap: 10px; /* title → copy: ≈15px between the letters (web 21px) */
+  }
+
+  /* the last story copy already ends with 48px of padding (plus the space
+     under its last line): 20px more puts the title as far below that copy as
+     the other section titles sit below their images */
+  .outro {
+    margin-top: 44px;
+  }
+
+  /* keep the stencil wordmark (≈47% down the square) under the launch copy */
+  .outro__graphic {
+    width: 180vw;
+    bottom: -77vw;
+    transform: translateX(-50%);
+  }
+
+  /* 2.5 cards in view, measured from the track's left edge */
+  .product {
+    flex-basis: calc((100vw - var(--track-x, 12px)) / 2.5);
+  }
+
+  .launch {
+    padding-top: 120px;
+    padding-bottom: 104px;
+  }
+
+  .launch__lines {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .launch__place {
+    font-size: 14px;
+  }
+
+}
+
+/* ---------- Intro (A_Intro) — full-screen layer over the page top ---------- */
+
+/* Shown only while html.intro-active (set in <head> before first paint).
+   Scrolling is held until the reveal has played; its last frame matches the
+   KV underneath, so the layer can simply disappear. */
+.gate {
+  --p: 0;
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  /* same black + grain as the page (Figma frame NOISE, measured identical) */
+  background: var(--black) url("img/noise@2x.webp") repeat 0 0 / 128px 128px;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
+.intro-active .gate {
+  display: block;
+}
+
+/* As soon as the symbol starts to surface (.s5) the pointer becomes a
+   "SCROLL" label that trails it (mouse only). Scrolling itself still waits
+   until the symbol has settled — see intro.js. */
+.gate__cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  font-family: var(--font-en);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--white);
+  white-space: nowrap;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+  translate: -50% -50%;
+  transition: opacity 0.4s ease;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .gate.s5 {
+    cursor: none;
+  }
+
+  .gate.s5.has-pointer .gate__cursor {
+    opacity: 1;
+  }
+}
+
+.intro-active,
+.intro-active body {
+  overflow: hidden;
+}
+
+.gate__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* the symbol comes in last (.s5); intro.js also brings it into focus */
+  opacity: 0;
+  transition: opacity 2.4s cubic-bezier(0.33, 0, 0.2, 1);
+}
+
+.gate.s5 .gate__canvas {
+  opacity: 1;
+}
+
+/* ---------- copy: built up one piece at a time ----------
+   s1  "All About Noirs" appears alone, centred
+   s2  the rule draws out beside it
+   s3  "Urban Exoskeleton" joins
+   s4  the two-line subline opens underneath
+   Each new piece grows its slot from zero (grid 0fr → 1fr), so what's
+   already there glides aside/up to keep the group centred. */
+.gate {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.gate__copy {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: calc(-50% - 0.5px) -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100vw - var(--gutter) * 2);
+  color: var(--gray01);
+  font-family: var(--font-en);
+  text-align: center;
+  pointer-events: none;
+  /* leaves in the first ~12% of the scroll: it fades in place (no drift),
+     on its own compositor layer so it isn't re-rasterised every frame */
+  opacity: calc(1 - var(--p) * 8);
+  will-change: opacity;
+  backface-visibility: hidden;
+}
+
+.gate__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: normal;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Text rises into place from below a hidden baseline, letter by letter:
+   each word / line clips its own content and its letters follow one another
+   ~20ms apart. Durations tighten from step to step (--d) so the opening
+   gathers pace. */
+.gate__word,
+.gate__line {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* room for descenders inside the clip */
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.gate__word > span,
+.gate__line > span {
+  display: inline-block;
+  white-space: nowrap;
+  visibility: hidden; /* until intro.js has split it into letters */
+}
+
+.gate.is-split .gate__word > span,
+.gate.is-split .gate__line > span {
+  visibility: visible;
+}
+
+.gate__char {
+  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  opacity: 0;
+  transition:
+    transform var(--d, 1s) var(--ease-out) calc(var(--delay, 0s) + var(--i) * 20ms),
+    opacity calc(var(--d, 1s) * 0.5) ease calc(var(--delay, 0s) + var(--i) * 20ms);
+}
+
+.gate__word--first {
+  --d: 1.05s;
+}
+
+.gate__slot--word .gate__word {
+  --d: 0.95s;
+  --delay: 0.12s; /* rises once its slot has begun to open */
+}
+
+.gate.s1 .gate__word--first .gate__char,
+.gate.s3 .gate__slot--word .gate__char,
+.gate.s4 .gate__line .gate__char {
+  transform: none;
+  opacity: 1;
+}
+
+/* horizontal slots: width 0 → natural width */
+.gate__slot {
+  display: grid;
+  grid-template-columns: 0fr;
+  overflow: hidden;
+  transition: grid-template-columns var(--slot-d, 1.3s) var(--ease-soft);
+}
+
+.gate__slot--rule {
+  --slot-d: 1.4s;
+}
+
+.gate__slot--word {
+  --slot-d: 1.15s;
+}
+
+.gate__slot > span {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.gate.s2 .gate__slot--rule,
+.gate.s3 .gate__slot--word {
+  grid-template-columns: 1fr;
+}
+
+/* the 8px gaps live inside the slots, so a closed slot takes no room */
+.gate__slot--rule > span {
+  padding: 0 8px;
+  height: 1em;
+}
+
+.gate__slot--word .gate__word {
+  display: block;
+  padding-left: 0;
+}
+
+.gate__rule {
+  display: block;
+  width: 30px;
+  height: 0.8px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease-out) 0.1s;
+}
+
+.gate.s2 .gate__rule {
+  transform: scaleX(1);
+}
+
+/* vertical slot for the subline: height 0 → natural, pushing the title up */
+.gate__subslot {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 1s var(--ease-soft);
+}
+
+.gate__subslot > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.gate.s4 .gate__subslot {
+  grid-template-rows: 1fr;
+}
+
+.gate__sub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 12px; /* the design's 12px gap, inside the slot */
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 1.7;
+  /* Title Case is written into the markup: text-transform: capitalize would
+     capitalise every letter once they're split into their own spans */
+}
+
+/* the subline's letters are small, so they follow each other faster */
+.gate__line .gate__char {
+  transition-delay: calc(var(--delay, 0s) + var(--i) * 10ms);
+}
+
+.gate__line:nth-child(1) {
+  --d: 1.8s;
+  --delay: 0.2s;
+}
+
+.gate__line:nth-child(2) {
+  --d: 1.8s;
+  --delay: 0.38s;
+}
+
+@media (max-width: 767px) {
+  .gate__title {
+    font-size: 18px;
+  }
+
+  .gate__slot--rule > span {
+    padding: 0 6px;
+  }
+
+  .gate__rule {
+    width: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate *,
+  .gate__canvas {
+    transition: none !important;
+  }
+}
+
+/* The KV photo sits in its final place from the start when an intro runs
+   (the intro's last frame is this exact image), so no load-in zoom. */
+.intro-active .kv__media > img,
+.intro-done .kv__media > img {
+  transform: translate(calc(-1 * var(--kv-fx)), calc(-1 * var(--kv-fy))) scale(1);
+  opacity: 1;
+  transition: none;
+}
+
+/* The KV copy is already in place under the intro (no entrance animation),
+   so the intro fades straight onto the finished home first screen. */
+.intro-active .kv__line,
+.intro-done .kv__line {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+
+/* ---------- Scroll progress (stands in for the hidden scrollbar) ---------- */
+
+/* A 1px track down the right edge with a thumb sized to the viewport's share
+   of the page. Quiet at rest, brighter while scrolling; hidden during the
+   intro. Positioned by main.js (--thumb-h, --thumb-y as fractions). */
+.progress {
+  position: fixed;
+  z-index: 60;
+  top: calc(var(--gutter) + env(safe-area-inset-top, 0px));
+  bottom: calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
+  right: calc(8px + env(safe-area-inset-right, 0px));
+  width: 1px;
+  background: rgba(255, 255, 255, 0.14);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  opacity: 0.55;
+  transition: opacity 0.6s ease;
+}
+
+.progress.is-scrolling {
+  opacity: 1;
+  transition-duration: 0.2s;
+}
+
+.intro-active .progress {
+  opacity: 0;
+}
+
+.progress__thumb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: calc(var(--thumb-h, 0.1) * 100%);
+  background: var(--white);
+  transform: translate3d(0, calc(var(--thumb-y, 0) * (100% / var(--thumb-h, 0.1) - 100%)), 0);
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  .progress {
+    right: 4px;
+  }
+}
