@@ -415,6 +415,7 @@ def page(key):
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
   <script src="{{R}}main.js?v={VER}"></script>
   <script type="module" src="{{R}}intro/intro.js?v={VER}" onerror="window.aansSkipIntro && window.aansSkipIntro()"></script>
+  <script type="module" src="{{R}}graphic.js?v={VER}"></script>
 </body>
 </html>
 '''
