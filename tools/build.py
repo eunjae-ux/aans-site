@@ -295,7 +295,7 @@ def page(key):
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />{jp_font}{en_font}
   <link rel="stylesheet" href="{{R}}style.css?v={VER}" />
-  <script type="importmap">{{ "imports": {{ "three": "https://unpkg.com/three@0.160.0/build/three.module.js" }} }}</script>
+  <script type="importmap">{{ "imports": {{ "three": "https://unpkg.com/three@0.160.0/build/three.module.min.js" }} }}</script>
   <script>
     // The intro plays once, on the first arrival in this browsing session —
     // not on a reload, Back/Forward, or a language change.
