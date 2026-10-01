@@ -134,20 +134,26 @@ html.lenis body {
   display: block;
 }
 
-/* phone-only line breaks (build.py "{m}" / "{join}"), for copy that would
-   otherwise wrap awkwardly on a narrow screen */
-.br-m {
+/* phone-only line breaks (build.py "{m}" / "{join}"): such paragraphs carry
+   the design's lines (.ln--d) and their phone lines (.ln--m) */
+.body .ln--m {
   display: none;
 }
 
 @media (max-width: 767px) {
-  .br-m {
-    display: inline;
+  .body .ln--d {
+    display: none;
   }
 
-  .body .ln--mjoin,
-  .body .ln--mjoined {
-    display: inline;
+  .body .ln--m {
+    display: block;
+  }
+
+  /* no short last lines: each line's breaks are evened out so it never
+     ends on a word or two (Safari 17.5+, Chrome 114+; ignored elsewhere) */
+  .body p,
+  .body .ln {
+    text-wrap: balance;
   }
 }
 

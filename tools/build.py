@@ -165,15 +165,25 @@ def lines(items, indent, lang):
         # Phone-only line breaks inside the design's lines:
         #   "{m}"    breaks the line here on phones only (a space elsewhere)
         #   "{join}" at a line's end: on phones it runs on into the next line
-        def span(j, l):
-            cls = "ln"
-            if l.endswith(MJOIN):
-                l, cls = l[: -len(MJOIN)], cls + " ln--mjoin"
-            if j and para[j - 1].endswith(MJOIN):
-                cls += " ln--mjoined"
-            text = f' <br class="br-m">'.join(e(part) for part in l.split(MBR))
-            return f'<span class="{cls}">{text}</span>'
-        spans = sep.join(span(j, l) for j, l in enumerate(para))
+        # A paragraph that uses them is written out twice — the design's lines
+        # (.ln--d, hidden on phones) and the phone lines (.ln--m, phones only)
+        # — so each phone line is a block of its own that the browser can
+        # balance; display:none keeps the twin out of screen readers.
+        if any(MBR in l or l.endswith(MJOIN) for l in para):
+            desk = [l.removesuffix(MJOIN).replace(MBR, " ") for l in para]
+            phone, carry = [], ""
+            for l in para:
+                parts = l.removesuffix(MJOIN).split(MBR)
+                parts[0] = (carry + " " + parts[0]).strip() if carry else parts[0]
+                if l.endswith(MJOIN):
+                    carry = parts.pop()
+                else:
+                    carry = ""
+                phone += parts
+            spans = sep.join(f'<span class="ln ln--d">{e(l)}</span>' for l in desk) + sep + \
+                sep.join(f'<span class="ln ln--m">{e(l)}</span>' for l in phone)
+        else:
+            spans = sep.join(f'<span class="ln">{e(l)}</span>' for l in para)
         out.append(f"{pad}<p>{spans}</p>")
     return "\n".join(out)
 
