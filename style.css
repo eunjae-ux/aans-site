@@ -967,7 +967,7 @@ html[lang="en"] .body {
     display: grid;
     grid-template-columns: minmax(0, calc(916 / 1440 * 100%)) max-content;
     align-content: end;
-    padding: 0 calc(var(--gutter) + env(safe-area-inset-right, 0px)) calc(50 * var(--u)) 0;
+    padding: 0 calc(var(--gutter) + env(safe-area-inset-right, 0px)) 32px 0; /* last line 32px off the bottom on every phone */
   }
 
   .kv__line {
