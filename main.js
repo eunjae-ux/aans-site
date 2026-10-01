@@ -224,13 +224,35 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     stretch = px;
     track.style.transform = px ? `translate3d(${-px}px, 0, 0)` : "";
   };
+  // released past an end, the strip springs home with a little bounce: it
+  // overshoots its resting place by about a tenth and settles (a damped
+  // spring, ~0.7s), rather than gliding in on a plain ease
+  let spring = 0;
   const springBack = () => {
     stretchTarget = 0;
+    cancelAnimationFrame(spring);
     if (!stretch) return;
-    // a soft ease-out (cubic): no snap at the start, a long settle
-    track.style.transition = "transform 0.95s cubic-bezier(0.33, 1, 0.68, 1)";
-    setStretch(0);
-    track.addEventListener("transitionend", () => (track.style.transition = ""), { once: true });
+    const k = 260; // stiffness
+    const c = 19; // damping
+    let x = stretch;
+    let v = 0;
+    let last = performance.now();
+    const tick = (now) => {
+      const dt = Math.min((now - last) / 1000, 1 / 30);
+      last = now;
+      for (let i = 0; i < 4; i++) {
+        const h = dt / 4;
+        v += (-k * x - c * v) * h;
+        x += v * h;
+      }
+      if (Math.abs(x) < 0.3 && Math.abs(v) < 6) {
+        setStretch(0);
+        return;
+      }
+      setStretch(x);
+      spring = requestAnimationFrame(tick);
+    };
+    spring = requestAnimationFrame(tick);
   };
 
   const follow = () => {
@@ -247,7 +269,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     dragging = true;
     touch = isTouch;
     anim = null;
-    track.style.transition = "";
+    cancelAnimationFrame(spring);
     stretchTarget = 0;
     setStretch(0);
     startX = lastX = x;
