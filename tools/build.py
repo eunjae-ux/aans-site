@@ -352,14 +352,15 @@ def page(key):
   <link rel="stylesheet" href="{{R}}style.css?v={VER}" />
   <script type="importmap">{{ "imports": {{ "three": "https://unpkg.com/three@0.160.0/build/three.module.min.js" }} }}</script>
   <script>
-    // The intro plays once, on the first arrival in this browsing session —
-    // not on a reload, Back/Forward, or a language change.
+    // The intro plays until it has been seen through once in this browsing
+    // session — then not again (reload, revisit); never on Back/Forward.
     (function () {{
       var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
-      if (nav && nav.type !== "navigate") return;
+      if (nav && nav.type === "back_forward") return;
       try {{
+        // set by main.js once the intro has been seen through to the end, so
+        // a reload part-way through plays it again
         if (sessionStorage.getItem("aans:intro-seen")) return;
-        sessionStorage.setItem("aans:intro-seen", "1");
       }} catch (e) {{}}
       document.documentElement.classList.add("intro-active");
     }})();

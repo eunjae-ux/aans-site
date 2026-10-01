@@ -23,6 +23,12 @@ window.aansSkipIntro = () => {
   lenis?.start();
   window.dispatchEvent(new Event("intro:done"));
 };
+// the intro has been seen (or skipped): don't play it again in this tab
+window.addEventListener("intro:done", () => {
+  try {
+    sessionStorage.setItem("aans:intro-seen", "1");
+  } catch {}
+});
 if (document.documentElement.classList.contains("intro-active")) {
   if (location.protocol === "file:") window.aansSkipIntro();
   // the intro marks itself ready once its WebGL scene is up
