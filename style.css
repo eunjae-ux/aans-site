@@ -1419,7 +1419,9 @@ html[lang="en"] .body {
   /* no track line: only the thumb shows */
   mix-blend-mode: difference;
   pointer-events: none;
-  opacity: 0.55;
+  /* only there while the page is moving (main.js: .is-scrolling, cleared
+     0.7s after the last scroll), fading out once it stops */
+  opacity: 0;
   transition: opacity 0.6s ease;
 }
 
