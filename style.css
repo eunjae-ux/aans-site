@@ -134,6 +134,23 @@ html.lenis body {
   display: block;
 }
 
+/* phone-only line breaks (build.py "{m}" / "{join}"), for copy that would
+   otherwise wrap awkwardly on a narrow screen */
+.br-m {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .br-m {
+    display: inline;
+  }
+
+  .body .ln--mjoin,
+  .body .ln--mjoined {
+    display: inline;
+  }
+}
+
 .body .gap {
   height: 24px;
 }

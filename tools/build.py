@@ -47,7 +47,7 @@ LANGS = {
         intro_w=684, intro_box=684, full_w=569,
         intro=[
             "We don’t reveal the body — we quietly enclose it. Layered forms and negative space shape a silhouette",
-            "that completes itself in motion, from behind. This balance comes from the curves and emptiness of Eastern architecture.",
+            "that completes itself in motion, from behind.{m}This balance comes from the curves and emptiness of Eastern architecture.",
             "Our black is not a single color. It is a depth expressed through layering — one that shifts with light.",
             "A restrained silhouette casts a different shadow with every movement.",
             HALF_GAP,
@@ -56,17 +56,17 @@ LANGS = {
         ],
         full_top=610,
         full=[
-            "The signature ANGOK cape panel comes from the gently curved eaves of a roof. As the eave",
+            "The signature ANGOK cape panel comes from the gently curved eaves of a roof.{m}As the eave{join}",
             "shields a house from wind and rain, the curve is carried onto the back of the garment —",
             "covering the back, the body’s most unguarded surface.",
             HALF_GAP,
             "An exoskeleton is a structure that supports and protects the body from the outside.",
-            "In the city, a battlefield of the senses, it is what quietly encloses you. That is what",
+            "In the city, a battlefield of the senses, it is what quietly encloses you.{m}That is what{join}",
             "All About Noirs means by “exoskeleton” in CUT 01.",
         ],
         cut=[
             "Every All About Noirs collection begins with a single scene. That scene comes from the world of the brand film.",
-            "The city is a battlefield of the senses. There is too much to see, and too much to hear.",
+            "The city is a battlefield of the senses.{m}There is too much to see, and too much to hear.",
             "Amid the overflow, each person is seized by one sense — and the seized sense loses its rhythm.",
         ],
         cut_wrap=False, cut_w=None,
@@ -139,6 +139,10 @@ SEP = {"ja": ""}
 LAZY = ' loading="lazy"'  # Japanese lines rejoin without a space when they reflow
 
 
+MBR = "{m}"      # phone-only line break (see lines())
+MJOIN = "{join}"  # phone-only: run this line on into the next
+
+
 def lines(items, indent, lang):
     """Design lines -> paragraphs (split on GAP) of .ln spans."""
     pad = " " * indent
@@ -158,7 +162,18 @@ def lines(items, indent, lang):
         if i:
             half = gaps[i - 1] == HALF_GAP
             out.append(f'{pad}<p class="gap{" gap--half" if half else ""}" aria-hidden="true"></p>')
-        spans = sep.join(f'<span class="ln">{e(l)}</span>' for l in para)
+        # Phone-only line breaks inside the design's lines:
+        #   "{m}"    breaks the line here on phones only (a space elsewhere)
+        #   "{join}" at a line's end: on phones it runs on into the next line
+        def span(j, l):
+            cls = "ln"
+            if l.endswith(MJOIN):
+                l, cls = l[: -len(MJOIN)], cls + " ln--mjoin"
+            if j and para[j - 1].endswith(MJOIN):
+                cls += " ln--mjoined"
+            text = f' <br class="br-m">'.join(e(part) for part in l.split(MBR))
+            return f'<span class="{cls}">{text}</span>'
+        spans = sep.join(span(j, l) for j, l in enumerate(para))
         out.append(f"{pad}<p>{spans}</p>")
     return "\n".join(out)
 
