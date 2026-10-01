@@ -230,7 +230,9 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     startScroll = dragTarget = track.scrollLeft;
     velocity = 0;
     track.classList.add("is-dragging");
-    track.setPointerCapture(e.pointerId);
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {} // the pointer can already be gone (e.g. a cancelled touch)
     requestAnimationFrame(follow);
   });
 
