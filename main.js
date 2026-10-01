@@ -240,49 +240,47 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     requestAnimationFrame(follow);
   };
 
-  track.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
+  // The drag itself, shared by the mouse (pointer events) and fingers
+  // (touch events, below).
+  const begin = (x, time, isTouch) => {
     dragging = true;
-    touch = e.pointerType !== "mouse";
+    touch = isTouch;
     anim = null;
     track.style.transition = "";
     stretchTarget = 0;
     setStretch(0);
-    startX = lastX = e.clientX;
-    lastT = e.timeStamp;
+    startX = lastX = x;
+    lastT = time;
     startScroll = dragTarget = track.scrollLeft;
     velocity = 0;
     track.classList.add("is-dragging");
-    try {
-      track.setPointerCapture(e.pointerId);
-    } catch {} // the pointer can already be gone (e.g. a cancelled touch)
     requestAnimationFrame(follow);
-  });
+  };
 
-  track.addEventListener("pointermove", (e) => {
+  const move = (x, time) => {
     if (!dragging) return;
-    const dt = Math.max(e.timeStamp - lastT, 1);
-    velocity = velocity * 0.6 + ((e.clientX - lastX) / dt) * 0.4;
-    lastX = e.clientX;
-    lastT = e.timeStamp;
-    const raw = startScroll - (e.clientX - startX);
+    const dt = Math.max(time - lastT, 1);
+    velocity = velocity * 0.6 + ((x - lastX) / dt) * 0.4;
+    lastX = x;
+    lastT = time;
+    const raw = startScroll - (x - startX);
     dragTarget = clamp(raw);
     if (touch) stretchTarget = rubber(raw - dragTarget); // 0 unless past an end
-  });
+  };
 
-  const release = (e) => {
+  const end = (x, time, click) => {
     if (!dragging) return;
     dragging = false;
     track.classList.remove("is-dragging");
     springBack();
-    // a mouse click without a drag steps one card toward the side clicked
-    if (arrow && e.type === "pointerup" && e.pointerType === "mouse" && Math.abs(e.clientX - startX) < 6) {
+    // a mouse click without a drag steps toward the side clicked
+    if (click && arrow && Math.abs(x - startX) < 6) {
       track.scrollLeft = startScroll;
-      step(sideOf(e.clientX));
+      step(sideOf(x));
       return;
     }
     const list = stops();
-    const moving = e.timeStamp - lastT < 80 ? velocity : 0;
+    const moving = time - lastT < 80 ? velocity : 0;
     // project where the flick would coast to, then land on a card near it
     const reach = touch ? 4 : 2; // cards per flick, at most
     // a slow drag lands where it's let go; only a real flick carries on
@@ -295,8 +293,60 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     i = Math.min(Math.max(i, from - reach), from + reach);
     goTo(i, easeOut, touch);
   };
-  track.addEventListener("pointerup", release);
-  track.addEventListener("pointercancel", release);
+
+  // mouse / pen
+  track.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch" || e.button !== 0) return;
+    begin(e.clientX, e.timeStamp, false);
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {} // the pointer can already be gone
+  });
+  track.addEventListener("pointermove", (e) => e.pointerType !== "touch" && move(e.clientX, e.timeStamp));
+  track.addEventListener("pointerup", (e) => e.pointerType !== "touch" && end(e.clientX, e.timeStamp, e.pointerType === "mouse"));
+  track.addEventListener("pointercancel", (e) => e.pointerType !== "touch" && end(e.clientX, e.timeStamp, false));
+
+  // fingers: touch events, which iOS Safari doesn't take back mid-gesture
+  // the way it cancels pointer events. The first few px decide the axis:
+  // sideways, and the track holds on to the finger until it lifts (the page
+  // doesn't scroll); up or down, and the page scrolls as usual.
+  let tx0 = 0;
+  let ty0 = 0;
+  let axis = null; // null (undecided) | "x" | "y"
+  track.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.touches.length !== 1) return;
+      tx0 = e.touches[0].clientX;
+      ty0 = e.touches[0].clientY;
+      axis = null;
+    },
+    { passive: true }
+  );
+  track.addEventListener(
+    "touchmove",
+    (e) => {
+      const p = e.touches[0];
+      if (!p) return;
+      if (axis === null) {
+        const dx = Math.abs(p.clientX - tx0);
+        const dy = Math.abs(p.clientY - ty0);
+        if (dx + dy < 6) return;
+        axis = dx > dy ? "x" : "y";
+        if (axis === "x") begin(tx0, e.timeStamp, true);
+      }
+      if (axis !== "x") return;
+      e.preventDefault();
+      move(p.clientX, e.timeStamp);
+    },
+    { passive: false }
+  );
+  const lift = (e) => {
+    if (axis === "x") end(e.changedTouches[0]?.clientX ?? lastX, e.timeStamp, false);
+    axis = null;
+  };
+  track.addEventListener("touchend", lift);
+  track.addEventListener("touchcancel", lift);
 
   // --- trackpad swipe / shift+wheel: one card per beat ---
   let wheelSum = 0;
