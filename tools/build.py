@@ -323,7 +323,7 @@ def page(key):
     </section>''')
 
     products = "\n".join(f'''          <li class="product" style="--pt:{t};--pb:{b};--px:{x}">
-            <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 40vw, 290px")}</div>
+            <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 45vw, 290px")}</div>
             <p class="product__name">{n}</p>
           </li>''' for i, (t, b, x, n) in enumerate(PRODUCTS, 1))
 

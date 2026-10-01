@@ -1050,9 +1050,9 @@ html[lang="en"] .body {
     transform: translateX(-50%);
   }
 
-  /* 2.5 cards in view, measured from the track's left edge */
+  /* 2.25 cards in view, measured from the track's left edge */
   .product {
-    flex-basis: calc((100vw - var(--track-x, 12px)) / 2.5);
+    flex-basis: calc((100vw - var(--track-x, 12px)) / 2.25);
   }
 
   .product__name {
