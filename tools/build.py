@@ -279,7 +279,7 @@ def page(key):
 <html lang="{L["lang"]}">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- status bar / browser chrome tint: the page's black-noise background on average -->
   <meta name="theme-color" content="#101010" />
   <title>All About Noirs — CUT 01. URBAN EXOSKELETON</title>

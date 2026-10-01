@@ -211,8 +211,8 @@ html[lang="en"] .body {
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  /* viewport-fit=cover: the page runs under the status bar / notch, so the
-     GNB keeps its gutter inside the safe area */
+  /* the gutter, plus the safe area if the page ever runs under the status
+     bar / notch (viewport-fit=cover; off for now, so these are 0) */
   padding:
     calc(var(--gutter) + env(safe-area-inset-top, 0px))
     calc(var(--gutter) + env(safe-area-inset-right, 0px))
