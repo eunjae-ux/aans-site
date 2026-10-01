@@ -1049,9 +1049,12 @@ html[lang="en"] .body {
 .gate {
   --p: 0;
   display: none;
-  position: fixed;
-  /* the large viewport, so it carries on under a floating browser toolbar
-     (iOS Safari) like the key visual it hands over to (also 100lvh) */
+  /* Pinned to the top of the page rather than position: fixed: iOS Safari
+     cuts fixed layers off above its floating toolbar, while page content
+     runs on underneath it. The page is held at the top while the intro
+     plays, so this stays in place. As tall as the large viewport, like the
+     key visual it hands over to (also 100lvh). */
+  position: absolute;
   inset: 0 0 auto;
   height: 100vh;
   height: 100lvh;
