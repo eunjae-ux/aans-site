@@ -14,12 +14,10 @@ LANGS = {
         desc="도시를 살아가는 이들을 위한 얼반 테크웨어 브랜드, All About Noirs. CUT 01. URBAN EXOSKELETON",
         intro_w=560, intro_box=540, full_w=538,
         intro=[
-            "우리는 몸을 드러내기보다 조용히 감싼다. 겹쳐진 레이어와 여백이 만드는 실루엣은 움직임과 뒷모습에서 완성된다.",
-            "이 균형은 동양 건축의 곡선과 여백에서 비롯되었다. AANS의 블랙은 하나의 색이 아니다.",
-            "빛에 따라 층위를 달리하는, 겹침에서 표현되는 깊이를 가진다. 절제된 실루엣은 움직임마다 다른 밀도의 그림자를 남긴다.",
-            HALF_GAP,
-            "도시 속에서, 조용히 나를 감싸는 외골격.",
-            "도시를 살아가는 이들을 위한 얼반 테크웨어 브랜드. All About Noirs.",
+            "고유한 세계관 위에 세워진 패션 브랜드.",
+            "이름 그대로 — 하나의 블랙이 아닌, 수많은 느와르.",
+            "어둠 속의 인물과 이야기, 블랙이라는 미학 전체를 옷과 영상, 공간으로 확장한다.",
+            "아틀리에 디렉터 KUROSE.K가 이끄는 이 세계는 CUT 01 : URBAN EXOSKELETON을 시작으로 차례로 펼쳐진다.",
         ],
         full_top=658,
         full=[
@@ -46,13 +44,10 @@ LANGS = {
         desc="An urban techwear brand for those who live within the city. All About Noirs. CUT 01. URBAN EXOSKELETON",
         intro_w=684, intro_box=684, full_w=569,
         intro=[
-            "We don’t reveal the body — we quietly enclose it. Layered forms and negative space shape a silhouette",
-            "that completes itself in motion, from behind.{m}This balance comes from the curves and emptiness of Eastern architecture.",
-            "Our black is not a single color. It is a depth expressed through layering — one that shifts with light.",
-            "A restrained silhouette casts a different shadow with every movement.",
-            HALF_GAP,
-            "An exoskeleton that quietly holds you, within the city.",
-            "An urban techwear brand for those who live within the city. All About Noirs.",
+            "A fashion brand built on an original world.",
+            "As the name says — not one black, but many noirs.",
+            "Figures and stories in the dark, the aesthetics of black in its entirety, extended through clothing, film, and space.",
+            "Led by atelier director KUROSE.K, the world unfolds in sequence — beginning with CUT 01 : URBAN EXOSKELETON.",
         ],
         full_top=610,
         full=[
@@ -81,13 +76,10 @@ LANGS = {
         desc="都市を生きる人のためのアーバンテックウェアブランド、All About Noirs。CUT 01. URBAN EXOSKELETON。",
         intro_w=609, intro_box=540, full_w=538,
         intro=[
-            "私たちは、身体を晒すのではなく、静かに纏わせる。重なるレイヤーと余白が生み出すシルエットは",
-            "動きと後ろ姿の中で完成する。このバランスは、東洋建築の曲線と余白から生まれた。",
-            "AANSのブラックは、ひとつの色ではない。光によって層を変える、重なりの中に表れる深みを持つ。",
-            "抑えられたシルエットは、動くたびに異なる濃淡の影を纏う。",
-            HALF_GAP,
-            "都市の中で、静かに私を纏う外骨格。",
-            "都市を生きる人のためのアーバンテックウェアブランド。All About Noirs",
+            "独自の世界観の上に築かれた、ファッションブランド。",
+            "その名のとおり — ひとつのブラックではなく、いくつものノワール。",
+            "闇の中の人物と物語、ブラックという美学のすべてを、服、映像、空間へと広げていく。",
+            "アトリエディレクターKUROSE.Kが率いるこの世界は、CUT 01 : URBAN EXOSKELETONから順に展開していく。",
         ],
         full_top=634,
         full=[
@@ -146,12 +138,12 @@ try:
 except ImportError:  # without it Japanese lines still build, just without phrase breaks
     _JA = None
 
-# names that must never break across lines in Korean / Japanese copy
-_KEEP = ("All About Noirs", "CUT 01")
+# names that must never break across lines
+_KEEP = ("All About Noirs", "CUT 01 : URBAN EXOSKELETON", "CUT 01", "KUROSE.K")
 
 
 def _cjk(text, lang):
-    """Escape a line of ko/ja copy: brand names held together, and (ja) a
+    """Escape a line of copy: brand names held together, and (ja) a
     <wbr> at each phrase boundary, so with word-break: keep-all lines only
     break between phrases, never inside a word."""
     for k in _KEEP:
@@ -191,7 +183,7 @@ def lines(items, indent, lang):
         # (.ln--d, hidden on phones) and the phone lines (.ln--m, phones only)
         # — so each phone line is a block of its own that the browser can
         # balance; display:none keeps the twin out of screen readers.
-        esc = (lambda t: _cjk(t, lang)) if lang in ("ja", "ko") else e
+        esc = lambda t: _cjk(t, lang)  # names held together in every language; ja phrase breaks
         if lang == "ko":
             # Korean design lines run sentences across lines; on phones each
             # sentence is a line of its own instead (then balanced)
@@ -421,7 +413,7 @@ def page(key):
 
     <!-- 02_Collection Info -->
     <section class="intro reveal">
-      <h2 class="title">WE DESIGNED URBAN EXOSKELETON</h2>
+      <h2 class="title">ALL ABOUT NOIRS</h2>
       <div class="body intro__body" data-t="intro" style="--w:{L["intro_w"]};--box:{L["intro_box"]}">
 {lines(L["intro"], 8, L["lang"])}
       </div>
