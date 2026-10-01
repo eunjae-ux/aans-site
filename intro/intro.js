@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001143604";
-import { loadLogoTexture } from "./logoTexture.js?v=20261001143604";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001143702";
+import { loadLogoTexture } from "./logoTexture.js?v=20261001143702";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -255,7 +255,7 @@ async function start() {
 
   const resize = () => {
     vw = window.innerWidth;
-    vh = window.innerHeight;
+    vh = overlay.clientHeight || window.innerHeight; // the overlay's own height (100lvh), as the KV's
     dpr = Math.min(window.devicePixelRatio, 2);
     renderer.setPixelRatio(dpr);
     renderer.setSize(vw, vh, false);

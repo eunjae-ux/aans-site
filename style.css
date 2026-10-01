@@ -1050,7 +1050,11 @@ html[lang="en"] .body {
   --p: 0;
   display: none;
   position: fixed;
-  inset: 0;
+  /* the large viewport, so it carries on under a floating browser toolbar
+     (iOS Safari) like the key visual it hands over to (also 100lvh) */
+  inset: 0 0 auto;
+  height: 100vh;
+  height: 100lvh;
   z-index: 100;
   /* same black + grain as the page (Figma frame NOISE, measured identical) */
   background: var(--black) url("img/noise@2x.webp") repeat 0 0 / 128px 128px;
