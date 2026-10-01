@@ -753,7 +753,7 @@ html[lang="en"] .body {
   position: absolute;
   top: var(--pt);
   bottom: var(--pb);
-  left: calc(50% + var(--px));
+  left: calc(50% + var(--px) * 100% / 314.2); /* design px on the 314.2px card, scaled with it */
   aspect-ratio: 2880 / 3840;
   width: auto;
   height: calc(100% - var(--pt) - var(--pb));

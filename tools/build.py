@@ -117,16 +117,16 @@ LANGS = {k: LANGS[k] for k in ("en", "jp", "kr")}
 
 STORY_EN = ["EASTERN STRUCTURE", "URBAN ENCLOSURE", "NOIR DENSITY"]
 STORY_IMG = ["08-2652_A-1", "09-2673_B-1", "08-2608_B-2"]
-PRODUCTS = [
-    ("1.94%", "1.2%", "0.83px", "SHELTER 3LAYER JACKET"),
-    ("1.94%", "1.2%", "1.33px", "SHELTER 3LAYER JUMPER"),
-    ("0%", "-1.17%", "-7.17px", "SHELTER 3LAYER COAT"),
-    ("-1.2%", "2.41%", "-4.67px", "EXOSHELL GOOSE DOWN PARKA"),
-    ("-4.63%", "3.46%", "-5.67px", "FRAME WOVEN S/S TEE"),
-    ("-4.29%", "-0.55%", "-4.67px", "FRAME WAFFLE L/S TEE"),
-    ("-8.09%", "-2.58%", "0.83px", "FRAME TWILL HOODIE"),
-    ("-0.12%", "0.9%", "5.33px", "SHELTER NYLON TROUSERS"),
-    ("-0.12%", "0.9%", "5.83px", "SHELTER CORDUROY TROUSERS"),
+PRODUCTS = [  # Figma 2597:2337 — photo top / bottom inset, x offset (design px on a 314.2px card)
+    ("-0.49%", "2.17%", "-0.11", "SHELTER 3LAYER JACKET"),
+    ("0.97%", "-0.02%", "6.17", "SHELTER 3LAYER JUMPER"),
+    ("0%", "-1.17%", "-6.61", "SHELTER 3LAYER COAT"),
+    ("0%", "0.22%", "-5.78", "EXOSHELL GOOSE DOWN PARKA"),
+    ("-5.11%", "0.95%", "-13.5", "FRAME WOVEN S/S TEE"),
+    ("-4.38%", "-2.94%", "-1.22", "FRAME WAFFLE L/S TEE"),
+    ("-6.81%", "-2.46%", "1.06", "FRAME TWILL HOODIE"),
+    ("0%", "1.44%", "-4.67", "SHELTER NYLON TROUSERS"),
+    ("0%", "-1.24%", "8.11", "SHELTER CORDUROY TROUSERS"),
 ]
 
 
