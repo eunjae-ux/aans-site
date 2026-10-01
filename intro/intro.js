@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001143119";
-import { loadLogoTexture } from "./logoTexture.js?v=20261001143119";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001143318";
+import { loadLogoTexture } from "./logoTexture.js?v=20261001143318";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -281,6 +281,32 @@ async function start() {
   });
   document.documentElement.addEventListener("mouseleave", () => overlay.classList.remove("has-pointer"));
 
+  // Touch screens have no pointer to follow, so there the lens follows the
+  // finger while it's down, and otherwise drifts slowly over the symbol on
+  // its own (an uneven Lissajous path), resuming a moment after the finger
+  // lifts — so the lens blur is alive on phones too.
+  const touchOnly = window.matchMedia("(hover: none)").matches;
+  let fingerDown = false;
+  let fingerUpAt = -Infinity;
+  if (touchOnly) {
+    const follow = (e) => {
+      const tp = e.touches[0];
+      if (tp) mouseTarget.set(tp.clientX, tp.clientY);
+    };
+    window.addEventListener("touchstart", (e) => { fingerDown = true; follow(e); }, { passive: true });
+    window.addEventListener("touchmove", follow, { passive: true });
+    window.addEventListener("touchend", () => { fingerDown = false; fingerUpAt = performance.now() * 0.001; }, { passive: true });
+  }
+  const drift = (t) => {
+    const g = glyphHeight();
+    const w = g * GLYPH.aspect;
+    const k = Math.min(Math.max((t - fingerUpAt - 1.5) / 2, 0), 1); // ease back in after a touch
+    const x = vw / 2 + w * 0.36 * Math.sin(t * 0.41) * Math.cos(t * 0.13 + 1.2);
+    const y = vh / 2 + g * 0.30 * Math.sin(t * 0.29 + 0.7) + g * 0.08 * Math.sin(t * 0.83);
+    mouseTarget.x += (x - mouseTarget.x) * k;
+    mouseTarget.y += (y - mouseTarget.y) * k;
+  };
+
   const frame = (now) => {
     raf = 0;
     if (state === "home") return;
@@ -290,7 +316,8 @@ async function start() {
     // step makes the damping jump *away* from the target (a visible twitch)
     const dt = Math.min(Math.max(t - last, 0), 0.1);
     last = Math.max(t, last);
-    mouse.x = THREE.MathUtils.damp(mouse.x, mouseTarget.x, 8, dt);
+    if (touchOnly && !fingerDown) drift(t);
+    mouse.x = THREE.MathUtils.damp(mouse.x, mouseTarget.x, touchOnly ? 4 : 8, dt);
     mouse.y = THREE.MathUtils.damp(mouse.y, mouseTarget.y, 8, dt);
     // the label trails the pointer a little, softer than the pointer itself
     cursorPos.x = THREE.MathUtils.damp(cursorPos.x, mouseTarget.x, 16, dt);
