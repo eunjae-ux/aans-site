@@ -1025,6 +1025,10 @@ html[lang="en"] .body {
     flex-basis: calc((100vw - var(--track-x, 12px)) / 2.5);
   }
 
+  .product__name {
+    font-size: 12px; /* fits the narrower cards on one line */
+  }
+
   .launch {
     padding-top: 120px;
     padding-bottom: 104px;
