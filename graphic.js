@@ -1,19 +1,16 @@
-// Footer stencil graphic ("그래픽 최종"), drawn live in WebGL instead of a
-// flat image.
+// Footer stencil graphic ("그래픽 최종"), set in motion in WebGL.
 //
-// The composition — where the spray lands, the drips, the ALL ABOUT NOIRS
-// stencil — comes from the artwork as a soft 1024px brightness map
-// (img/footer-density.webp, grain removed). Everything you actually see is
-// generated here: the paint coverage is the map thresholded against noise,
-// which breaks its edges into the artwork's reticulated spray, with dark
-// worm-like flecks inside the paint and sparse light specks in the black.
-//
-// Motion: the flecks stream slowly downward along the drips, the spray edges
-// keep shifting, the drips sway a little (the stencil band stays put), and
-// the paint thickens around the pointer as if sprayed on.
-//
-// The <img> stays in the markup as the fallback; it's hidden once the first
-// frame is drawn (.is-live).
+// The artwork itself is the picture — the page's own <img> of it is the
+// texture, so it looks exactly like the original when still and costs no
+// extra download. The motion is all code, and deliberately uneven:
+//   - the drips run and the overspray drifts, on a clock whose speed keeps
+//     wandering (slow, then a little quicker, then nearly still)
+//   - now and then a gust passes through and stirs it more strongly
+//   - the grain "boils" like hand-drawn animation: it re-jitters on an
+//     irregular beat, and individual particles flicker
+//   - the stencil band (ALL ABOUT NOIRS) moves far less, so it stays legible
+//   - around the pointer the paint builds up as if sprayed on
+// Until the first frame is drawn — or without WebGL — the <img> shows as is.
 
 const box = document.querySelector(".outro__graphic");
 const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -25,7 +22,7 @@ void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
 
 const FRAGMENT = `
 precision highp float;
-uniform sampler2D u_den;
+uniform sampler2D u_art;
 uniform vec2 u_res;
 uniform float u_time;
 uniform vec3 u_mouse; // uv (top-left origin), strength
@@ -82,51 +79,44 @@ void main() {
   vec2 uv = gl_FragCoord.xy / u_res;
   uv.y = 1.0 - uv.y;
   float t = u_time;
+  vec2 px = 1.0 / u_res;
 
-  // drips sway: a slow vertical smear, kept off the stencil band (y ≈ .46–.53)
-  float band = smoothstep(0.03, 0.09, abs(uv.y - 0.495));
-  vec2 sway = vec2(
-    0.0015 * snoise(vec3(uv * 3.0, t * 0.05)),
-    0.004 * snoise(vec3(uv.x * 9.0, uv.y * 1.2, t * 0.07))
-  ) * band;
-  float d = texture2D(u_den, uv + sway).r;
+  // uneven clock and occasional gusts (0 most of the time, up to 1)
+  float tt = t + 4.0 * snoise(vec3(t * 0.045, 1.7, 0.0));
+  float gust = smoothstep(0.1, 0.9, snoise(vec3(t * 0.09, 5.3, 0.0)));
+  // the stencil band barely moves
+  float calm = mix(0.18, 1.0, smoothstep(0.03, 0.09, abs(uv.y - 0.495)));
 
-  // pointer: paint builds up around it
-  float m = u_mouse.z * exp(-dot(uv - u_mouse.xy, uv - u_mouse.xy) / 0.006);
-  d = clamp(d + m * (0.35 + 0.15 * snoise(vec3(uv * 40.0, t * 0.6))), 0.0, 1.0);
+  vec2 disp;
+  // overspray drifting sideways
+  disp.x = 0.0035 * snoise(vec3(uv * 3.0, tt * 0.06));
+  // drips: a downward pull per column, each column at its own pace
+  float pace = 0.10 + 0.09 * snoise(vec3(uv.x * 13.0, 0.0, tt * 0.05));
+  disp.y = -0.009 * (0.5 + 0.5 * snoise(vec3(uv.x * 10.0, uv.y * 1.3 - tt * pace, tt * 0.07)));
+  // a gust: larger, quicker swirl
+  disp += gust * vec2(
+    0.006 * snoise(vec3(uv * 5.0, t * 0.5)),
+    0.011 * snoise(vec3(uv * 4.0 + 9.0, t * 0.45))
+  );
+  disp *= calm;
 
-  // grain space, in units of the artwork (~1/260 of its width per fleck);
-  // each column streams down at its own slow pace
-  float fall = t * (0.010 + 0.012 * (0.5 + 0.5 * snoise(vec3(uv.x * 6.0, 0.0, 3.1))));
-  vec2 p = (uv + vec2(0.0, -fall)) * 260.0;
+  // boil: the grain re-jitters on an uneven beat (roughly 5–10 a second)
+  float beat = floor(t * 7.0 + 2.5 * snoise(vec3(t * 0.6, 2.2, 0.0)));
+  vec2 boil = vec2(
+    snoise(vec3(uv * 70.0, beat * 1.37)),
+    snoise(vec3(uv * 70.0 + 4.0, beat * 1.37))
+  ) * 1.4 * px * mix(0.4, 1.0, calm);
 
-  // Where the paint is thick, the base is the map itself (the artwork's own
-  // gradations) at the paint's tone (~175/255), with dark flecks cut in.
-  // Where it thins out, it turns into what the artwork shows there: a dust
-  // of fine light particles, as many as the paint is dense. Grain size
-  // follows the artwork (~1/400–1/800 of its width).
-  // The stencil letters get a little more contrast so their edges read.
-  d = mix(d, smoothstep(0.12, 0.8, d), 1.0 - band);
+  float c = texture2D(u_art, uv + disp + boil).r;
 
-  vec2 warp = vec2(snoise(vec3(p * 0.06, t * 0.04)), snoise(vec3(p * 0.06 + 17.0, t * 0.04)));
-  float u1 = 1.0 / (1.0 + exp(-5.0 * snoise(vec3(p * 1.6 + warp * 0.8, t * 0.06))));        // flecks
-  float u2 = 1.0 / (1.0 + exp(-5.0 * snoise(vec3(p * 0.45 + warp * 0.5, t * 0.04 + 9.0)))); // coarse breakup
-  float u3 = 1.0 / (1.0 + exp(-9.0 * snoise(vec3(p * 2.3 + 31.0, t * 0.07))));             // dust
+  // individual particles flicker on the same beat
+  float flick = snoise(vec3(uv * 420.0, beat * 0.77));
+  c *= 1.0 + 0.16 * flick * smoothstep(0.04, 0.3, c);
 
-  float solid = smoothstep(0.08, 0.45, d);                  // 0 = dust, 1 = paint
-  float dustP = clamp(d * 1.8, 0.0, 1.0);
-  float dust = (1.0 - smoothstep(dustP - 0.02, dustP + 0.02, u3)) * smoothstep(0.01, 0.05, d); // none on bare black
-  float cover = mix(dust, 1.0, solid);
-  float shade = mix(0.5 + 0.5 * d, d, solid);
-
-  float edge = 4.0 * d * (1.0 - d);
-  float fleckP = (0.05 + 0.06 * edge) * smoothstep(0.3, 0.6, d);
-  float fleck = 1.0 - smoothstep(fleckP - 0.03, fleckP + 0.03, u1);
-  float breakP = 0.08 * edge * (1.0 - d);
-  float brk = 1.0 - smoothstep(breakP - 0.04, breakP + 0.04, u2);
-
-  float tone = 0.76 + 0.04 * snoise(vec3(uv * 7.0, t * 0.02));
-  float c = tone * shade * cover * (1.0 - 0.92 * fleck) * (1.0 - 0.85 * brk);
+  // pointer: a fine dust of paint builds up around it
+  float m = u_mouse.z * exp(-dot(uv - u_mouse.xy, uv - u_mouse.xy) / 0.005);
+  float dust = 1.0 / (1.0 + exp(-9.0 * snoise(vec3(uv * 520.0, beat * 0.5 + t * 0.2))));
+  c = max(c, 0.55 * m * (1.0 - smoothstep(m * 0.6 - 0.02, m * 0.6 + 0.02, dust)));
 
   gl_FragColor = vec4(vec3(c), 1.0);
 }
@@ -164,20 +154,31 @@ function start() {
   const uTime = u("u_time");
   const uMouse = u("u_mouse");
 
-  const img = new Image();
-  img.src = new URL("img/footer-density.webp", import.meta.url).href; // graphic.js sits at the site root
-  img.decode().then(() => {
+  // the artwork: the fallback <img> already on the page (whichever size its
+  // srcset picked), scaled down only if the GPU can't take it
+  const img = box.querySelector("img");
+  const upload = () => {
+    let source = img;
+    const max = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    if (img.naturalWidth > max) {
+      source = document.createElement("canvas");
+      source.width = source.height = max;
+      source.getContext("2d").drawImage(img, 0, 0, max, max);
+    }
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, gl.LUMINANCE, gl.UNSIGNED_BYTE, img);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, gl.LUMINANCE, gl.UNSIGNED_BYTE, source);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     box.prepend(canvas);
     run();
-  });
+  };
+  if (!img) return;
+  if (img.complete && img.naturalWidth) upload();
+  else img.addEventListener("load", upload, { once: true });
 
   // pointer, eased; the graphic sits behind the copy, so listen on the window
   const mouse = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, amt: 0, target: 0 };

@@ -40,8 +40,10 @@ def save(img, name, alpha):
 
 
 os.makedirs(OUT, exist_ok=True)
+# clear only the files this script makes (others in img/ — svgs, noise tiles,
+# anything added by hand — are left alone)
 for f in os.listdir(OUT):
-    if not f.endswith(".svg") and not f.startswith("noise"):
+    if f.split("@")[0] in CROPS or f.split("@")[0] in WHOLE:
         os.remove(os.path.join(OUT, f))
 
 report = {}
