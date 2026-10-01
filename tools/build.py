@@ -2,6 +2,7 @@ import json, os, shutil, html, time
 
 VER = time.strftime("%Y%m%d%H%M%S")  # cache-busting stamp for this build
 
+SITE = "https://www.aa-official.com"  # the live address (aa-official.com redirects here)
 OUT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # the site root (tools/..)
 
 GAP = None  # blank 24px row
@@ -219,9 +220,30 @@ def page(key):
     R = "../" if L["dir"] else ""
     label = lambda k: f"[&nbsp;&nbsp;{LANGS[k]['label']}&nbsp;&nbsp;]"
 
+    # absolute addresses, as link previews and search engines need them
+    url = lambda k: f'{SITE}/{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}'
     alternates = "\n".join(
-        f'  <link rel="alternate" hreflang="{LANGS[k]["lang"]}" href="{R}{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}index.html" />'
-        for k in LANGS)
+        [f'  <link rel="alternate" hreflang="{LANGS[k]["lang"]}" href="{url(k)}" />' for k in LANGS]
+        + [f'  <link rel="alternate" hreflang="x-default" href="{url("en")}" />'])
+    locale = {"en": "en_US", "jp": "ja_JP", "kr": "ko_KR"}
+    share = "\n".join([
+        f'  <link rel="canonical" href="{url(key)}" />',
+        '  <meta property="og:type" content="website" />',
+        '  <meta property="og:site_name" content="All About Noirs" />',
+        f'  <meta property="og:url" content="{url(key)}" />',
+        '  <meta property="og:title" content="All About Noirs — CUT 01. URBAN EXOSKELETON" />',
+        f'  <meta property="og:description" content="{e(L["desc"])}" />',
+        f'  <meta property="og:image" content="{SITE}/og-image.jpg" />',
+        '  <meta property="og:image:width" content="1200" />',
+        '  <meta property="og:image:height" content="630" />',
+        '  <meta property="og:image:alt" content="All About Noirs — CUT 01. URBAN EXOSKELETON" />',
+        f'  <meta property="og:locale" content="{locale[key]}" />',
+    ] + [f'  <meta property="og:locale:alternate" content="{locale[k]}" />' for k in LANGS if k != key] + [
+        '  <meta name="twitter:card" content="summary_large_image" />',
+        '  <meta name="twitter:title" content="All About Noirs — CUT 01. URBAN EXOSKELETON" />',
+        f'  <meta name="twitter:description" content="{e(L["desc"])}" />',
+        f'  <meta name="twitter:image" content="{SITE}/og-image.jpg" />',
+    ])
     # The list holds only the other languages, without brackets.
     menu = "\n".join(
         f'          <li><a href="{R}{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}index.html" hreflang="{LANGS[k]["lang"]}"'
@@ -262,7 +284,11 @@ def page(key):
   <meta name="theme-color" content="#101010" />
   <title>All About Noirs — CUT 01. URBAN EXOSKELETON</title>
   <meta name="description" content="{e(L["desc"])}" />
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="{R}favicon.ico" sizes="48x48" />
+  <link rel="icon" href="{R}favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="{R}apple-touch-icon.png" />
+  <link rel="manifest" href="{R}site.webmanifest" />
+{share}
 {alternates}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
