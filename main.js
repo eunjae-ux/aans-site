@@ -172,7 +172,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     else anim = null;
   };
 
-  const goTo = (i, ease = easeInOut) => {
+  const goTo = (i, ease = easeInOut, quick = false) => {
     const list = stops();
     index = Math.min(Math.max(i, 0), list.length - 1);
     const to = list[index];
@@ -183,7 +183,11 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
       return;
     }
     const cards = Math.abs(to - from) / (items[0].offsetWidth || 300);
-    const duration = Math.min(1100 + Math.max(cards - 1, 0) * 180, 1800);
+    // touch settles quickly (it follows a finger that just let go); mouse,
+    // wheel and arrow clicks keep the slower, more deliberate glide
+    const duration = quick
+      ? Math.min(450 + Math.max(cards - 1, 0) * 110, 900)
+      : Math.min(1100 + Math.max(cards - 1, 0) * 180, 1800);
     anim = { from, to, start: performance.now(), duration, ease };
     if (!raf) raf = requestAnimationFrame(frame);
   };
@@ -198,16 +202,19 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   let lastX = 0;
   let lastT = 0;
   let velocity = 0; // px per ms, pointer direction
+  let touch = false; // finger drags: no lag, quicker landing, longer flicks
 
   const follow = () => {
     if (!dragging) return;
-    track.scrollLeft += (dragTarget - track.scrollLeft) * 0.22; // a little weight behind the pointer
+    // a mouse drag has a little weight behind it; a finger moves the track 1:1
+    track.scrollLeft += (dragTarget - track.scrollLeft) * (touch ? 1 : 0.22);
     requestAnimationFrame(follow);
   };
 
   track.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
     dragging = true;
+    touch = e.pointerType !== "mouse";
     anim = null;
     startX = lastX = e.clientX;
     lastT = e.timeStamp;
@@ -240,11 +247,16 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     const list = stops();
     const moving = e.timeStamp - lastT < 80 ? velocity : 0;
     // project where the flick would coast to, then land on a card near it
-    const projected = dragTarget - Math.min(Math.max(moving, -2), 2) * 180;
+    const reach = touch ? 4 : 2; // cards per flick, at most
+    // a slow drag lands where it's let go; only a real flick carries on
+    const flick = touch && Math.abs(moving) < 0.5 ? moving * 0.3 : moving;
+    const projected = dragTarget - Math.min(Math.max(flick, -3), 3) * (touch ? 200 : 180);
     let i = nearestIndex(projected, list);
     const from = nearestIndex(startScroll, list);
-    i = Math.min(Math.max(i, from - 2), from + 2); // at most two cards per flick
-    goTo(i, easeOut);
+    // a short, quick swipe still moves at least one card
+    if (touch && i === from && Math.abs(moving) > 0.3) i = from - Math.sign(moving);
+    i = Math.min(Math.max(i, from - reach), from + reach);
+    goTo(i, easeOut, touch);
   };
   track.addEventListener("pointerup", release);
   track.addEventListener("pointercancel", release);
