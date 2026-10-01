@@ -139,6 +139,28 @@ SEP = {"ja": ""}
 LAZY = ' loading="lazy"'  # Japanese lines rejoin without a space when they reflow
 
 
+import re as _re_lines
+try:
+    import budoux  # Japanese phrase segmentation (pip install budoux)
+    _JA = budoux.load_default_japanese_parser()
+except ImportError:  # without it Japanese lines still build, just without phrase breaks
+    _JA = None
+
+# names that must never break across lines in Korean / Japanese copy
+_KEEP = ("All About Noirs", "CUT 01")
+
+
+def _cjk(text, lang):
+    """Escape a line of ko/ja copy: brand names held together, and (ja) a
+    <wbr> at each phrase boundary, so with word-break: keep-all lines only
+    break between phrases, never inside a word."""
+    for k in _KEEP:
+        text = text.replace(k, k.replace(" ", "\u00a0"))
+    if lang == "ja" and _JA:
+        return "<wbr>".join(e(seg) for seg in _JA.parse(text))
+    return e(text)
+
+
 MBR = "{m}"      # phone-only line break (see lines())
 MJOIN = "{join}"  # phone-only: run this line on into the next
 
@@ -169,7 +191,15 @@ def lines(items, indent, lang):
         # (.ln--d, hidden on phones) and the phone lines (.ln--m, phones only)
         # — so each phone line is a block of its own that the browser can
         # balance; display:none keeps the twin out of screen readers.
-        if any(MBR in l or l.endswith(MJOIN) for l in para):
+        esc = (lambda t: _cjk(t, lang)) if lang in ("ja", "ko") else e
+        if lang == "ko":
+            # Korean design lines run sentences across lines; on phones each
+            # sentence is a line of its own instead (then balanced)
+            desk = para
+            phone = [x for x in _re_lines.split(r"(?<=[.!?])\s+", " ".join(para)) if x]
+            spans = sep.join(f'<span class="ln ln--d">{esc(l)}</span>' for l in desk) + sep + \
+                sep.join(f'<span class="ln ln--m">{esc(l)}</span>' for l in phone)
+        elif any(MBR in l or l.endswith(MJOIN) for l in para):
             desk = [l.removesuffix(MJOIN).replace(MBR, " ") for l in para]
             phone, carry = [], ""
             for l in para:
@@ -180,10 +210,10 @@ def lines(items, indent, lang):
                 else:
                     carry = ""
                 phone += parts
-            spans = sep.join(f'<span class="ln ln--d">{e(l)}</span>' for l in desk) + sep + \
-                sep.join(f'<span class="ln ln--m">{e(l)}</span>' for l in phone)
+            spans = sep.join(f'<span class="ln ln--d">{esc(l)}</span>' for l in desk) + sep + \
+                sep.join(f'<span class="ln ln--m">{esc(l)}</span>' for l in phone)
         else:
-            spans = sep.join(f'<span class="ln">{e(l)}</span>' for l in para)
+            spans = sep.join(f'<span class="ln">{esc(l)}</span>' for l in para)
         out.append(f"{pad}<p>{spans}</p>")
     return "\n".join(out)
 

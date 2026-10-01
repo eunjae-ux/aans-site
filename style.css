@@ -136,16 +136,23 @@ html.lenis body {
 
 /* phone-only line breaks (build.py "{m}" / "{join}"): such paragraphs carry
    the design's lines (.ln--d) and their phone lines (.ln--m) */
-.body .ln--m {
+html[lang] .body .ln.ln--m {
   display: none;
 }
 
+/* Japanese: lines break only at the phrase boundaries build.py marks with
+   <wbr> (BudouX), never inside a word */
+html[lang="ja"] .body {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 767px) {
-  .body .ln--d {
+  html[lang] .body .ln.ln--d {
     display: none;
   }
 
-  .body .ln--m {
+  html[lang] .body .ln.ln--m {
     display: block;
   }
 
