@@ -1416,7 +1416,7 @@ html[lang="en"] .body {
   bottom: calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
   right: calc(8px + env(safe-area-inset-right, 0px));
   width: 1px;
-  background: rgba(255, 255, 255, 0.14);
+  /* no track line: only the thumb shows */
   mix-blend-mode: difference;
   pointer-events: none;
   opacity: 0.55;
