@@ -469,9 +469,11 @@ def page(key):
 
       <div class="collection">
         <h2 class="title collection__title">URBAN EXOSKELETON Collection <small class="collection__sub">Pop-up Exclusive Preview</small></h2>
-        <ul class="collection__track" data-drag-scroll data-lenis-prevent-horizontal>
+        <div class="collection__track" data-drag-scroll data-lenis-prevent-horizontal>
+          <ul class="collection__strip">
 {products}
-        </ul>
+          </ul>
+        </div>
       </div>
 
       <div class="launch reveal">

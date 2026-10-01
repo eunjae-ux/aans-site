@@ -153,11 +153,28 @@ document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el))
 // crossing several cards).
 document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const items = [...track.children];
+  // The cards sit on one strip that's moved with a GPU transform (never by
+  // scrolling the box): nothing is repainted while it slides, so it stays
+  // smooth on phones. `pos` is how far the strip has moved left.
+  const strip = track.querySelector(".collection__strip") || track;
+  const items = [...strip.children];
+  let pos = 0;
+  let stretch = 0; // rubber band past either end (touch), added on top of pos
+  const apply = () => {
+    strip.style.transform = `translate3d(${-(pos + stretch)}px, 0, 0)`;
+  };
+  const setPos = (x) => {
+    pos = x;
+    apply();
+  };
   const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2); // cubic
   const easeOut = (t) => 1 - (1 - t) ** 4; // quart: for moves that start already in motion
 
-  const maxScroll = () => track.scrollWidth - track.clientWidth;
+  const maxScroll = () => {
+    const last = items[items.length - 1];
+    const end = last.offsetLeft + last.offsetWidth - items[0].offsetLeft + parseFloat(getComputedStyle(strip).paddingRight);
+    return Math.max(end - track.clientWidth, 0);
+  };
   const clamp = (v) => Math.min(Math.max(v, 0), maxScroll());
   // Snap stops: each card's left edge, plus the very end of the track.
   const stops = () => {
@@ -168,40 +185,74 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   const nearestIndex = (x, list = stops()) =>
     list.reduce((best, v, i) => (Math.abs(v - x) < Math.abs(list[best] - x) ? i : best), 0);
 
-  let anim = null; // { from, to, start, duration, ease }
+  let anim = null; // { from, to, start, duration, ease } or a spring { spring, x, v, to, last }
   let raf = 0;
   let index = 0;
 
   const frame = (now) => {
     raf = 0;
     if (!anim) return;
+    if (anim.spring) {
+      // critically damped: carries the release speed, settles without overshoot
+      const a = anim;
+      const dt = Math.min((now - a.last) / 1000, 1 / 30);
+      a.last = now;
+      const k = 110;
+      const c = 2 * Math.sqrt(k);
+      for (let n = 0; n < 4; n++) {
+        const h = dt / 4;
+        a.v += (-k * (a.x - a.to) - c * a.v) * h;
+        a.x += a.v * h;
+      }
+      if (Math.abs(a.x - a.to) < 0.5 && Math.abs(a.v) < 12) {
+        setPos(a.to);
+        anim = null;
+        return;
+      }
+      setPos(a.x);
+      raf = requestAnimationFrame(frame);
+      return;
+    }
     const t = Math.min((now - anim.start) / anim.duration, 1);
-    track.scrollLeft = anim.from + (anim.to - anim.from) * anim.ease(t);
+    setPos(anim.from + (anim.to - anim.from) * anim.ease(t));
     if (t < 1) raf = requestAnimationFrame(frame);
     else anim = null;
   };
 
-  const goTo = (i, ease = easeInOut, quick = false) => {
+  const goTo = (i, ease = easeInOut) => {
     const list = stops();
     index = Math.min(Math.max(i, 0), list.length - 1);
     const to = list[index];
-    const from = track.scrollLeft;
+    const from = pos;
     if (reduced.matches || Math.abs(to - from) < 1) {
       anim = null;
-      track.scrollLeft = to;
+      setPos(to);
       return;
     }
     const cards = Math.abs(to - from) / (items[0].offsetWidth || 300);
-    // touch settles quickly (it follows a finger that just let go); mouse,
-    // wheel and arrow clicks keep the slower, more deliberate glide
-    const duration = quick
-      ? Math.min(450 + Math.max(cards - 1, 0) * 110, 900)
-      : Math.min(1100 + Math.max(cards - 1, 0) * 180, 1800);
+    // mouse, wheel and arrow clicks: a slow, deliberate glide (fingers land
+    // with glideTo instead)
+    const duration = Math.min(1100 + Math.max(cards - 1, 0) * 180, 1800);
     anim = { from, to, start: performance.now(), duration, ease };
     if (!raf) raf = requestAnimationFrame(frame);
   };
 
-  const progress = () => (anim ? (performance.now() - anim.start) / anim.duration : 1);
+  const progress = () => (anim && !anim.spring ? (performance.now() - anim.start) / anim.duration : 1);
+
+  // a finger's release: glide on to card i from the current speed (px/s of
+  // scroll), so there's no jolt between the drag and the landing
+  const glideTo = (i, v0) => {
+    const list = stops();
+    index = Math.min(Math.max(i, 0), list.length - 1);
+    const to = list[index];
+    if (reduced.matches) {
+      anim = null;
+      setPos(to);
+      return;
+    }
+    anim = { spring: true, x: pos, v: v0, to, last: performance.now() };
+    if (!raf) raf = requestAnimationFrame(frame);
+  };
 
   // --- drag (mouse + touch; vertical touch still scrolls the page) ---
   let dragging = false;
@@ -214,7 +265,6 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   let touch = false; // finger drags: no lag, quicker landing, longer flicks
   // past either end a finger drag stretches the strip like a rubber band
   // (the iOS overscroll curve) and lets it spring back on release
-  let stretch = 0;
   let stretchTarget = 0; // eased toward on every frame of the drag (follow)
   const rubber = (over) => {
     const d = track.clientWidth;
@@ -222,7 +272,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   };
   const setStretch = (px) => {
     stretch = px;
-    track.style.transform = px ? `translate3d(${-px}px, 0, 0)` : "";
+    apply();
   };
   // released past an end, the strip springs home: quick off the mark, then
   // easing in without overshooting (a critically damped spring, ~0.5s)
@@ -257,7 +307,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   const follow = () => {
     if (!dragging) return;
     // a mouse drag has a little weight behind it; a finger moves the track 1:1
-    track.scrollLeft += (dragTarget - track.scrollLeft) * (touch ? 1 : 0.22);
+    setPos(pos + (dragTarget - pos) * (touch ? 1 : 0.22));
     if (touch && Math.abs(stretchTarget - stretch) > 0.1) setStretch(stretch + (stretchTarget - stretch) * 0.35);
     requestAnimationFrame(follow);
   };
@@ -273,7 +323,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     setStretch(0);
     startX = lastX = x;
     lastT = time;
-    startScroll = dragTarget = track.scrollLeft;
+    startScroll = dragTarget = pos;
     velocity = 0;
     track.classList.add("is-dragging");
     requestAnimationFrame(follow);
@@ -297,7 +347,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     springBack();
     // a mouse click without a drag steps toward the side clicked
     if (click && arrow && Math.abs(x - startX) < 6) {
-      track.scrollLeft = startScroll;
+      setPos(startScroll);
       step(sideOf(x));
       return;
     }
@@ -313,7 +363,8 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     // a short, quick swipe still moves at least one card
     if (touch && i === from && Math.abs(moving) > 0.3) i = from - Math.sign(moving);
     i = Math.min(Math.max(i, from - reach), from + reach);
-    goTo(i, easeOut, touch);
+    if (touch) glideTo(i, -moving * 1000); // finger right = scroll left
+    else goTo(i, easeOut);
   };
 
   // mouse / pen
@@ -386,14 +437,14 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
       if (Math.abs(wheelSum) < 24) return;
       const dir = Math.sign(wheelSum);
       wheelSum = 0;
-      if (!anim) index = nearestIndex(track.scrollLeft);
+      if (!anim) index = nearestIndex(pos);
       goTo(index + dir);
     },
     { passive: false }
   );
 
   window.addEventListener("resize", () => {
-    if (!dragging && !anim) track.scrollLeft = stops()[Math.min(index, stops().length - 1)];
+    if (!dragging && !anim) setPos(stops()[Math.min(index, stops().length - 1)]);
   });
 
   // --- desktop: an arrow follows the mouse in place of the cursor ---
@@ -406,7 +457,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     return x < r.left + r.width / 2 ? -1 : 1;
   };
   function step(dir) {
-    if (!anim) index = nearestIndex(track.scrollLeft);
+    if (!anim) index = nearestIndex(pos);
     goTo(index + dir * 2); // two cards per click
   }
   if (fine.matches) {
