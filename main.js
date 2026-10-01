@@ -227,7 +227,8 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   const springBack = () => {
     stretchTarget = 0;
     if (!stretch) return;
-    track.style.transition = "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)";
+    // a soft ease-out (cubic): no snap at the start, a long settle
+    track.style.transition = "transform 0.95s cubic-bezier(0.33, 1, 0.68, 1)";
     setStretch(0);
     track.addEventListener("transitionend", () => (track.style.transition = ""), { once: true });
   };
