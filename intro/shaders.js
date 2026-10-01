@@ -29,9 +29,10 @@ uniform float u_aperture;
 uniform float u_glowIntensity;
 uniform float u_lensScale;     // lens size relative to the design (logo 52.5% of the height)
 
-uniform sampler2D u_photo;     // the home KV photo, sharp
-uniform sampler2D u_photoBlur; // the same photo pre-blurred (Figma layer blur 34)
-uniform float u_clear;         // 0 = design treatment (blurred, veiled) → 1 = clean photo
+uniform sampler2D u_photoBlur; // the home KV photo pre-blurred (Figma layer blur 34)
+uniform float u_clear;         // 0 = design treatment (blurred, veiled) → 1 = the KV itself
+uniform sampler2D u_bg;        // the page's noise tile (img/noise@2x.webp, 256px)
+uniform float u_bgTile;        // its size on screen, device px (128 css px)
 uniform vec4 u_photoRect;      // device px: left, top, width, height
 uniform float u_zoomBlur;      // extra defocus over the whole logo as it grows
 uniform float u_grain;         // strength of the grain layer over the symbol
@@ -79,26 +80,29 @@ void main() {
     mask += fill(distCenter, 0.0, glowEdge) * sdfCircle * u_glowIntensity;
     mask = clamp(mask, 0.0, 1.0);
 
-    // photo, positioned by u_photoRect (texture rows are bottom-up)
+    // Inside the symbol the overlay is a window onto the page beneath: the
+    // home key visual itself (so the hand-over to it can't jump or double).
+    // At first the window is filled with the design's treatment — the photo
+    // blurred (layer blur 34), under a #373737 40% veil, with grain — which
+    // lifts as the intro scrolls (u_clear), leaving the real KV.
     vec2 fragTop = vec2(gl_FragCoord.x, u_resolution.y - gl_FragCoord.y);
     vec2 pUv = (fragTop - u_photoRect.xy) / u_photoRect.zw;
     pUv = vec2(pUv.x, 1.0 - pUv.y);
-    // as the mask opens the photo sharpens and the veil lifts, heading for
-    // the clean home KV it fades onto
-    vec3 photo = mix(texture2D(u_photoBlur, pUv).rgb, texture2D(u_photo, pUv).rgb, u_clear);
-
-    // Figma: #191919 fill at 50%, plus the frame's noise effect lifting it
-    // slightly. Fitted on Figma's render inside the logo: 0.6 × photo + 22,
-    // i.e. a 40% veil of #373737.
-    photo = mix(photo, vec3(55.0 / 255.0), 0.4 * (1.0 - u_clear));
-
-    // Grain layer over the (blurred) symbol: monochrome, zero-mean, one grain
-    // per device pixel, read from a pre-generated random tile (an arithmetic
-    // hash shows a faint lattice).
+    vec3 cover = texture2D(u_photoBlur, pUv).rgb;
+    cover = mix(cover, vec3(55.0 / 255.0), 0.4);
+    // grain: monochrome, zero-mean, one grain per device pixel, from a
+    // pre-generated random tile (an arithmetic hash shows a faint lattice)
     float n = (texture2D(u_grainTex, gl_FragCoord.xy / 512.0).r - 0.5) * 2.0;
-    photo += n * u_grain * (1.0 - u_clear);
+    cover = clamp(cover + n * u_grain, 0.0, 1.0);
+    float coverA = 1.0 - u_clear;
 
-    // premultiplied: black-noise page background shows through outside the mask
-    gl_FragColor = vec4(clamp(photo * mask, 0.0, 1.0), mask);
+    // Outside the symbol: the page's black + noise background, tiled from the
+    // top-left exactly like the CSS background it takes over from.
+    vec2 bgUv = fragTop / u_bgTile;
+    vec3 bg = texture2D(u_bg, vec2(bgUv.x, 1.0 - bgUv.y)).rgb;
+
+    // premultiplied: opaque background outside, a clear window inside
+    float bgA = 1.0 - mask;
+    gl_FragColor = vec4(bg * bgA + cover * coverA * mask, bgA + coverA * mask);
 }
 `;

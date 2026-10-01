@@ -1066,6 +1066,20 @@ html[lang="en"] .body {
   display: block;
 }
 
+/* Once the canvas is fully in (it fades in over 2.4s from .s5) it draws the
+   background itself, with a window cut through it where the symbol is; the
+   CSS background then has to go so the page shows through that window.
+   Scrolling (which opens the window) only starts 2.6s after .s5. */
+.gate.s5 {
+  animation: gate-bg-off 0s linear 2.45s forwards;
+}
+
+@keyframes gate-bg-off {
+  to {
+    background: none;
+  }
+}
+
 /* As soon as the symbol starts to surface (.s5) the pointer becomes a
    "SCROLL" label that trails it (mouse only). Scrolling itself still waits
    until the symbol has settled — see intro.js. */

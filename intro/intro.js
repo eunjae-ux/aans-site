@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001143702";
-import { loadLogoTexture } from "./logoTexture.js?v=20261001143702";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001144240";
+import { loadLogoTexture } from "./logoTexture.js?v=20261001144240";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -23,6 +23,7 @@ const GLYPH = { h: 520, cy: 489.8, aspect: 68 / 46 };
 const PHOTO = { box: 3390, aspect: 3390 / 2746, fx: 0.3602, fy: 0.2837 };
 const PAD = 0.22; // logoTexture's padding on each side
 const ZOOM_MAX = 5; // logo scale at the end of the zoom
+const TOUCH = window.matchMedia("(hover: none)").matches;
 const FADE_FROM = 0.55; // the layer starts fading onto home here (0–1 of the scroll)
 const FILL_BLUR = 0.22; // gaussian defocus once the logo fills the screen (screen-height units)
 const SURFACE = 2600; // ms for the symbol to come into focus after s5
@@ -144,12 +145,15 @@ async function start() {
       )
     );
 
-  const [{ texture: logoSdf, aspect: logoAspect }, photoBlur, grain, photo] = await Promise.all([
+  // (the sharp photo isn't needed: inside the symbol the real home KV shows)
+  const [{ texture: logoSdf, aspect: logoAspect }, photoBlur, grain, bgNoise] = await Promise.all([
     loadLogoTexture(asset("img/logo-mark.svg")),
     loadTex(asset("img/kv-blur.webp")),
     loadTex(asset("img/grain.webp")),
-    loadTex(asset("../img/kv-02-0644@2x.webp")), // same file as the home KV (already loading for it)
+    loadTex(asset("../img/noise@2x.webp")), // the page background tile
   ]);
+  bgNoise.wrapS = bgNoise.wrapT = THREE.RepeatWrapping;
+  bgNoise.needsUpdate = true;
   // grain is read texel-for-pixel: no filtering, tiled
   grain.magFilter = grain.minFilter = THREE.NearestFilter;
   grain.wrapS = grain.wrapT = THREE.RepeatWrapping;
@@ -175,7 +179,8 @@ async function start() {
     u_aperture: { value: 1.4 },
     u_glowIntensity: { value: 0.35 },
     u_lensScale: { value: 1 },
-    u_photo: { value: photo },
+    u_bg: { value: bgNoise },
+    u_bgTile: { value: 128 },
     u_photoBlur: { value: photoBlur },
     u_clear: { value: 0 },
     u_photoRect: { value: photoRect },
@@ -256,11 +261,13 @@ async function start() {
   const resize = () => {
     vw = window.innerWidth;
     vh = overlay.clientHeight || window.innerHeight; // the overlay's own height (100lvh), as the KV's
-    dpr = Math.min(window.devicePixelRatio, 2);
+    // phones have dense screens: a full-screen blur at 2–3× drops frames
+    dpr = Math.min(window.devicePixelRatio, TOUCH ? 1.5 : 2);
     renderer.setPixelRatio(dpr);
     renderer.setSize(vw, vh, false);
     res.set(vw * dpr, vh * dpr);
     uniforms.u_pixelRatio.value = dpr;
+    uniforms.u_bgTile.value = 128 * dpr;
     if (!mouseMoved) {
       restMouse();
       mouse.copy(mouseTarget);
