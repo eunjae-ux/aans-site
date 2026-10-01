@@ -215,17 +215,19 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   // past either end a finger drag stretches the strip like a rubber band
   // (the iOS overscroll curve) and lets it spring back on release
   let stretch = 0;
+  let stretchTarget = 0; // eased toward on every frame of the drag (follow)
   const rubber = (over) => {
     const d = track.clientWidth;
-    return Math.sign(over) * (1 - 1 / ((Math.abs(over) * 0.55) / d + 1)) * d;
+    return Math.sign(over) * (1 - 1 / ((Math.abs(over) * 1.0) / d + 1)) * d;
   };
   const setStretch = (px) => {
     stretch = px;
     track.style.transform = px ? `translate3d(${-px}px, 0, 0)` : "";
   };
   const springBack = () => {
+    stretchTarget = 0;
     if (!stretch) return;
-    track.style.transition = "transform 0.5s cubic-bezier(0.2, 0.9, 0.25, 1)";
+    track.style.transition = "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)";
     setStretch(0);
     track.addEventListener("transitionend", () => (track.style.transition = ""), { once: true });
   };
@@ -234,6 +236,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     if (!dragging) return;
     // a mouse drag has a little weight behind it; a finger moves the track 1:1
     track.scrollLeft += (dragTarget - track.scrollLeft) * (touch ? 1 : 0.22);
+    if (touch && Math.abs(stretchTarget - stretch) > 0.1) setStretch(stretch + (stretchTarget - stretch) * 0.35);
     requestAnimationFrame(follow);
   };
 
@@ -243,6 +246,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     touch = e.pointerType !== "mouse";
     anim = null;
     track.style.transition = "";
+    stretchTarget = 0;
     setStretch(0);
     startX = lastX = e.clientX;
     lastT = e.timeStamp;
@@ -263,7 +267,7 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     lastT = e.timeStamp;
     const raw = startScroll - (e.clientX - startX);
     dragTarget = clamp(raw);
-    if (touch) setStretch(rubber(raw - dragTarget)); // 0 unless past an end
+    if (touch) stretchTarget = rubber(raw - dragTarget); // 0 unless past an end
   });
 
   const release = (e) => {
