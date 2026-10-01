@@ -212,6 +212,23 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
   let lastT = 0;
   let velocity = 0; // px per ms, pointer direction
   let touch = false; // finger drags: no lag, quicker landing, longer flicks
+  // past either end a finger drag stretches the strip like a rubber band
+  // (the iOS overscroll curve) and lets it spring back on release
+  let stretch = 0;
+  const rubber = (over) => {
+    const d = track.clientWidth;
+    return Math.sign(over) * (1 - 1 / ((Math.abs(over) * 0.55) / d + 1)) * d;
+  };
+  const setStretch = (px) => {
+    stretch = px;
+    track.style.transform = px ? `translate3d(${-px}px, 0, 0)` : "";
+  };
+  const springBack = () => {
+    if (!stretch) return;
+    track.style.transition = "transform 0.5s cubic-bezier(0.2, 0.9, 0.25, 1)";
+    setStretch(0);
+    track.addEventListener("transitionend", () => (track.style.transition = ""), { once: true });
+  };
 
   const follow = () => {
     if (!dragging) return;
@@ -225,6 +242,8 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     dragging = true;
     touch = e.pointerType !== "mouse";
     anim = null;
+    track.style.transition = "";
+    setStretch(0);
     startX = lastX = e.clientX;
     lastT = e.timeStamp;
     startScroll = dragTarget = track.scrollLeft;
@@ -242,13 +261,16 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     velocity = velocity * 0.6 + ((e.clientX - lastX) / dt) * 0.4;
     lastX = e.clientX;
     lastT = e.timeStamp;
-    dragTarget = clamp(startScroll - (e.clientX - startX));
+    const raw = startScroll - (e.clientX - startX);
+    dragTarget = clamp(raw);
+    if (touch) setStretch(rubber(raw - dragTarget)); // 0 unless past an end
   });
 
   const release = (e) => {
     if (!dragging) return;
     dragging = false;
     track.classList.remove("is-dragging");
+    springBack();
     // a mouse click without a drag steps one card toward the side clicked
     if (arrow && e.type === "pointerup" && e.pointerType === "mouse" && Math.abs(e.clientX - startX) < 6) {
       track.scrollLeft = startScroll;
