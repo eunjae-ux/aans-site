@@ -6,7 +6,7 @@ If the source doesn't have enough pixels for a true 2x, the crop is kept at
 its native resolution instead of being upscaled.
 """
 import json, os
-from PIL import Image, ImageOps
+from PIL import Image, ImageFilter, ImageOps
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ORIG = os.path.join(HERE, "orig")
@@ -68,6 +68,13 @@ for name, (dw, dh) in WHOLE.items():
     img = src.resize((round(sw * k), round(sh * k)), Image.LANCZOS) if k < 1 else src
     report[name] = save(img, name, True)
     report[name]["scale"] = round(img.size[0] / dw, 2)
+
+# the intro's blurred copy of the KV photo (Figma A_Intro: layer blur 34 on
+# the 3390px-wide photo box = a gaussian of sd 17 box px), at half size
+kv = Image.open(os.path.join(ORIG, "kv-02-0644")).convert("RGB")
+sd = 17 * kv.width / 3390
+half = kv.resize((kv.width // 2, kv.height // 2), Image.LANCZOS).filter(ImageFilter.GaussianBlur(sd / 2))
+half.save(os.path.join(os.path.dirname(HERE), "intro", "img", "kv-blur.webp"), "WEBP", quality=80, method=6)
 
 with open(os.path.join(HERE, "images.json"), "w") as fp:
     json.dump(report, fp, indent=1)

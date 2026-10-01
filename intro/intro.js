@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001134958";
-import { loadLogoTexture } from "./logoTexture.js?v=20261001134958";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001140053";
+import { loadLogoTexture } from "./logoTexture.js?v=20261001140053";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -20,7 +20,7 @@ import { loadLogoTexture } from "./logoTexture.js?v=20261001134958";
 //   zoom        around the glyph's own centre, which stays at the screen centre
 const DESIGN = { w: 1440, h: 990 };
 const GLYPH = { h: 520, cy: 489.8, aspect: 68 / 46 };
-const PHOTO = { box: 3390, aspect: 4096 / 3318, fx: 0.3602, fy: 0.2837 };
+const PHOTO = { box: 3390, aspect: 3390 / 2746, fx: 0.3602, fy: 0.2837 };
 const PAD = 0.22; // logoTexture's padding on each side
 const ZOOM_MAX = 5; // logo scale at the end of the zoom
 const FADE_FROM = 0.55; // the layer starts fading onto home here (0–1 of the scroll)

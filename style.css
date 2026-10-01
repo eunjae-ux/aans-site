@@ -413,7 +413,7 @@ html[lang="en"] .body {
   width: max(calc(3390 / 1440 * 100vw), calc(3390 / 990 * 100svh));
   max-width: none;
   height: auto;
-  aspect-ratio: 4096 / 3318;
+  aspect-ratio: 3390 / 2746;
   transform-origin: var(--kv-fx) var(--kv-fy);
   transform: translate(calc(-1 * var(--kv-fx)), calc(-1 * var(--kv-fy))) scale(1.14);
   opacity: 0;
@@ -609,18 +609,11 @@ html[lang="en"] .body {
   transform: translateX(calc(-50% - 20 * var(--s)));
 }
 
-.outro__graphic img,
-.outro__canvas {
-  display: block;
+.outro__graphic img {
   width: 100%;
   height: 100%;
   max-width: none;
   object-fit: cover;
-}
-
-/* graphic.js draws the graphic live; the image is only the fallback */
-.outro__graphic.is-live img {
-  display: none;
 }
 
 .outro__graphic::before {
@@ -912,7 +905,7 @@ html[lang="en"] .body {
   .kv__media > img {
     --kv-fx: 38%;
     --kv-fy: 30%;
-    width: max(calc(0.5 / 0.38 * 100vw), calc(1.8 * 4096 / 3318 * 100svh));
+    width: max(calc(0.5 / 0.38 * 100vw), calc(1.8 * 3390 / 2746 * 100svh));
   }
 
   /* Same layout as the web: the copy block starts at x = 916/1440 (moving
