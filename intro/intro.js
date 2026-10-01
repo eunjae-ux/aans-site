@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001150616";
-import { loadLogoTexture } from "./logoTexture.js?v=20261001150616";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261001150745";
+import { loadLogoTexture } from "./logoTexture.js?v=20261001150745";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //

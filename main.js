@@ -224,16 +224,15 @@ document.querySelectorAll("[data-drag-scroll]").forEach((track) => {
     stretch = px;
     track.style.transform = px ? `translate3d(${-px}px, 0, 0)` : "";
   };
-  // released past an end, the strip springs home with a little bounce: it
-  // overshoots its resting place by about a tenth and settles (a damped
-  // spring, ~0.7s), rather than gliding in on a plain ease
+  // released past an end, the strip springs home: quick off the mark, then
+  // easing in without overshooting (a critically damped spring, ~0.5s)
   let spring = 0;
   const springBack = () => {
     stretchTarget = 0;
     cancelAnimationFrame(spring);
     if (!stretch) return;
     const k = 260; // stiffness
-    const c = 19; // damping
+    const c = 2 * Math.sqrt(k); // critical damping: no bounce
     let x = stretch;
     let v = 0;
     let last = performance.now();
