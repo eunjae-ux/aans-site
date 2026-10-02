@@ -52,8 +52,8 @@ LANGS = {
             "the back to the arm — carried throughout the collection.",
         ],
         cut=[
-            "The theme of the first collection: URBAN EXOSKELETON.",
-            "An exoskeleton, rendered in clothing — quietly enclosing and guarding the body against the city’s overflow of stimulation.",
+            "The theme of the first collection: URBAN EXOSKELETON.{m}An exoskeleton, rendered in clothing —{join}",
+            "quietly enclosing and guarding the body against the city’s overflow of stimulation.",
             "A design language that wraps the body rather than reveals it — and favors balance over frontal emphasis.",
             "Overlapping layers and empty space complete the form; a deep, light-absorbing black holds its restrained density.",
             "The silhouette is designed to reveal itself not from the front — but from behind, and in motion.",
