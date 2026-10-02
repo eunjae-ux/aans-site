@@ -101,8 +101,8 @@ LANGS = {k: LANGS[k] for k in ("en", "jp", "kr")}
 STORY_EN = ["EASTERN STRUCTURE", "URBAN ENCLOSURE", "NOIR DENSITY"]
 STORY_IMG = ["08-2652_A-1", "09-2673_B-1", "08-2608_B-2"]
 PRODUCTS = [  # Figma 2597:2337 — photo top / bottom inset, x offset (design px on a 314.2px card)
-    ("-0.49%", "2.17%", "-0.11", "SHELTER 3LAYER JACKET"),
-    ("0.97%", "-0.02%", "6.17", "SHELTER 3LAYER JUMPER"),
+    ("-0.49%", "2.17%", "-0.11", "SHELTER 3LAYER JUMPER"),
+    ("0.97%", "-0.02%", "6.17", "SHELTER 3LAYER JACKET"),
     ("0%", "-1.17%", "-6.61", "SHELTER 3LAYER COAT"),
     ("0%", "0.22%", "-5.78", "EXOSHELL GOOSE DOWN PARKA"),
     ("-5.11%", "0.95%", "-13.5", "FRAME WOVEN S/S TEE"),
