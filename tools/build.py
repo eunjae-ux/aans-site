@@ -470,7 +470,7 @@ def page(key):
       </div>
 
       <div class="collection">
-        <h2 class="title collection__title">URBAN EXOSKELETON Collection <small class="collection__sub">Pop-up Exclusive Preview</small></h2>
+        <h2 class="title collection__title">CUT 01. URBAN EXOSKELETON <small class="collection__sub">Pop-up Exclusive Preview</small></h2>
         <div class="collection__track" data-drag-scroll data-lenis-prevent-horizontal>
           <ul class="collection__strip">
 {products}
