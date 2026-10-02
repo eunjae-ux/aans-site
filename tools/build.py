@@ -26,11 +26,13 @@ LANGS = {
             "곡선의 레이어로 재해석해, 컬렉션 전반에 담았다.",
         ],
         cut=[
-            "All About Noirs의 모든 컬렉션은 하나의 장면에서 시작된다. 그 장면은 브랜드 필름의 세계에서 온다.",
-            "도시는 감각의 전장이다. 보이는 것이 너무 많고, 들리는 것이 너무 많다.",
-            "넘치는 자극 속에서 사람들은 저마다 하나의 감각에 붙들리고, 붙들린 감각은 리듬을 잃는다.",
+            "첫 번째 컬렉션의 테마, URBAN EXOSKELETON.",
+            "도시의 넘치는 자극으로부터 몸을 조용히 감싸고 지키는 외골격을 옷으로 구현했다.",
+            "몸을 드러내기보다 감싸는 디자인 언어 — 정면의 강조보다 균형을 택한다.",
+            "겹쳐진 레이어와 여백이 형태를 완성하고, 빛을 흡수하는 깊은 블랙이 절제된 밀도를 지킨다.",
+            "실루엣은 정면이 아닌 — 뒷모습과 움직임 속에서 드러나도록 설계되었다.",
         ],
-        cut_wrap=True, cut_w=472,
+        cut_wrap=False, cut_w=None,
         stories=[
             (429, "— 동양적 구조", ["완곡히 휘어진 오래된 지붕의 처마, 하늘과 경계를 나누는 선.", "힘을 뺀 곡선의 여유는 AANS의 선으로 옮겨진다."]),
             (429, "— 도시의 감쌈", ["도시에는 늘 누군가의 시선과 소리가 스친다.", "그 틈 사이에서 차갑지만 안전하게 감싸는, 자기만의 도시."]),
@@ -53,9 +55,11 @@ LANGS = {
             "the back to the arm — carried throughout the collection.",
         ],
         cut=[
-            "Every All About Noirs collection begins with a single scene. That scene comes from the world of the brand film.",
-            "The city is a battlefield of the senses.{m}There is too much to see, and too much to hear.",
-            "Amid the overflow, each person is seized by one sense — and the seized sense loses its rhythm.",
+            "The theme of the first collection: URBAN EXOSKELETON.",
+            "An exoskeleton, rendered in clothing — quietly enclosing and guarding the body against the city’s overflow of stimulation.",
+            "A design language that wraps the body rather than reveals it — and favors balance over frontal emphasis.",
+            "Overlapping layers and empty space complete the form; a deep, light-absorbing black holds its restrained density.",
+            "The silhouette is designed to reveal itself not from the front — but from behind, and in motion.",
         ],
         cut_wrap=False, cut_w=None,
         stories=[
@@ -80,9 +84,11 @@ LANGS = {
             "再解釈し、コレクション全体に通わせた。",
         ],
         cut=[
-            "All About Noirsのすべてのコレクションは、ひとつの場面から始まる。その場面は、ブランドフィルムの世界からやってくる。",
-            "都市は、感覚の戦場である。見えるものが多すぎ、聞こえるものが多すぎる。",
-            "あふれる刺激のなかで、人はそれぞれひとつの感覚に囚われ、囚われた感覚はリズムを失っていく。",
+            "ファーストコレクションのテーマは、URBAN EXOSKELETON。",
+            "都市にあふれる刺激から、身体を静かに包み、守る外骨格を服として形にした。",
+            "身体を見せるのではなく包み込むデザイン言語 — 正面の強調よりも、バランスを選ぶ。",
+            "重なるレイヤーと余白がかたちを完成させ、光を吸い込む深いブラックが抑えられた密度を保つ。",
+            "シルエットは正面からではなく — 後ろ姿と動きの中で現れるよう設計されている。",
         ],
         cut_wrap=False, cut_w=None,
         stories=[
@@ -128,7 +134,7 @@ except ImportError:  # without it Japanese lines still build, just without phras
     _JA = None
 
 # names that must never break across lines
-_KEEP = ("All About Noirs", "CUT 01 : URBAN EXOSKELETON", "CUT 01", "KUROSE.K")
+_KEEP = ("All About Noirs", "CUT 01 : URBAN EXOSKELETON", "CUT 01", "KUROSE.K", "디자인 언어")
 
 
 # names written without spaces that still must not break (held in a nowrap span)
@@ -141,6 +147,8 @@ def _cjk(text, lang):
     break between phrases, never inside a word."""
     for k in _KEEP:
         text = text.replace(k, k.replace(" ", "\u00a0"))
+    # a dash stays at the end of its line, never starting the next one
+    text = text.replace(" — ", "\u00a0— ")
     for k in _NOBR:
         if k in text:
             head, tail = text.split(k, 1)
@@ -150,7 +158,8 @@ def _cjk(text, lang):
         return ""
     if lang == "ja" and _JA:
         return "<wbr>".join(e(seg) for seg in _JA.parse(text))
-    return e(text)
+    # hyphenated words (light-absorbing) don't split at the hyphen
+    return _re_lines.sub(r"(?<![\w-])([A-Za-z]+(?:-[A-Za-z]+)+)(?![\w-])", r'<span class="nobr">\1</span>', e(text))
 
 
 MBR = "{m}"      # phone-only line break (see lines())
