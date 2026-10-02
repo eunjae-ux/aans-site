@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { signedDistanceField } from "./sdf.js?v=20261002091605";
+import { signedDistanceField } from "./sdf.js?v=20261002091738";
 
 // Rasterizes the logo's SVG path(s) FILLED onto an offscreen canvas, then
 // bakes a real signed distance field from that mask (see sdf.js). The shader

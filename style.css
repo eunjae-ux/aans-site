@@ -882,16 +882,8 @@ html[lang="en"] .body {
 /* ---------- Tablet + mobile ---------- */
 
 @media (max-width: 1023px) {
-  /* KR design lines are whole sentences, so they reflow as paragraphs.
-     EN/JP keep the design's line breaks at every width: each design line
-     still starts on its own line and only wraps if the screen is too narrow. */
-  html[lang="ko"] .body .ln {
-    display: inline;
-  }
-
-  html[lang="ko"] .body .gap {
-    height: 12px;
-  }
+  /* Every language keeps the design's line breaks on tablets too: each
+     design line starts on its own line and only wraps if it has to. */
 
   .intro {
     margin-top: 120px;
