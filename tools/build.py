@@ -482,7 +482,7 @@ def page(key):
           <p>CUT 01. URBAN EXOSKELETON</p>
           <p>2026. 10.24 SAT - 11.01 SUN</p>
         </div>
-        <p class="launch__place">RAND OMOTESANDO TOKYO</p>
+        <p class="launch__place">RAND OMOTESANDO TOKYO<br />Jingumae Court, 4-24-3 Jingumae, Shibuya, Tokyo</p>
       </div>
 
       <footer class="footer">
