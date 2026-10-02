@@ -14,8 +14,7 @@ LANGS = {
         desc="도시를 살아가는 이들을 위한 얼반 테크웨어 브랜드, All About Noirs. CUT 01. URBAN EXOSKELETON",
         intro_w=560, intro_box=540, full_w=538,
         intro=[
-            "고유한 세계관 위에 세워진 패션 브랜드.",
-            "이름 그대로 — 하나의 블랙이 아닌, 수많은 느와르.",
+            "고유한 세계관 위에 세워진 패션 브랜드.{m}이름 그대로 — 하나의 블랙이 아닌, 수많은 느와르.",
             "어둠 속의 인물과 이야기, 블랙이라는 미학 전체를 옷과 영상, 공간으로 확장한다.",
             "아틀리에 디렉터 KUROSE.K가 이끄는 이 세계는 CUT 01 : URBAN EXOSKELETON을 시작으로 차례로 펼쳐진다.",
         ],
@@ -196,8 +195,9 @@ def lines(items, indent, lang):
         if lang == "ko":
             # Korean design lines run sentences across lines; on phones each
             # sentence is a line of its own instead (then balanced)
-            desk = para
-            phone = [x for x in _re_lines.split(r"(?<=[.!?])\s+", " ".join(para)) if x]
+            desk = [l.removesuffix(MJOIN).replace(MBR, " ") for l in para]
+            flat = " ".join(l.removesuffix(MJOIN).replace(MBR, " ") for l in para)
+            phone = [x for x in _re_lines.split(r"(?<=[.!?])\s+", flat) if x]
             spans = sep.join(f'<span class="ln ln--d">{esc(l)}</span>' for l in desk) + sep + \
                 sep.join(f'<span class="ln ln--m">{esc(l)}</span>' for l in phone)
         elif any(MBR in l or l.endswith(MJOIN) for l in para):
