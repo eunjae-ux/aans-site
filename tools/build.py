@@ -44,8 +44,7 @@ LANGS = {
         desc="An urban techwear brand for those who live within the city. All About Noirs. CUT 01. URBAN EXOSKELETON",
         intro_w=684, intro_box=684, full_w=569,
         intro=[
-            "A fashion brand built on an original world.",
-            "As the name says — not one black, but many noirs.",
+            "A fashion brand built on an original world.{m}As the name says — not one black, but many noirs.",
             "Figures and stories in the dark, the aesthetics of black in its entirety, extended through clothing, film, and space.",
             "Led by atelier director KUROSE.K, the world unfolds in sequence — beginning with CUT 01 : URBAN EXOSKELETON.",
         ],
@@ -74,10 +73,9 @@ LANGS = {
     "jp": dict(
         lang="ja", dir="jp", label="JP",
         desc="都市を生きる人のためのアーバンテックウェアブランド、All About Noirs。CUT 01. URBAN EXOSKELETON。",
-        intro_w=609, intro_box=540, full_w=538,
+        intro_w=652, intro_box=540, full_w=538,
         intro=[
-            "独自の世界観の上に築かれた、ファッションブランド。",
-            "その名のとおり — ひとつのブラックではなく、いくつものノワール。",
+            "独自の世界観の上に築かれた、ファッションブランド。{m}その名のとおり — ひとつのブラックではなく、いくつものノワール。",
             "闇の中の人物と物語、ブラックという美学のすべてを、服、映像、空間へと広げていく。",
             "アトリエディレクターKUROSE.Kが率いるこの世界は、CUT 01 : URBAN EXOSKELETONから順に展開していく。",
         ],
@@ -192,7 +190,7 @@ def lines(items, indent, lang):
             spans = sep.join(f'<span class="ln ln--d">{esc(l)}</span>' for l in desk) + sep + \
                 sep.join(f'<span class="ln ln--m">{esc(l)}</span>' for l in phone)
         elif any(MBR in l or l.endswith(MJOIN) for l in para):
-            desk = [l.removesuffix(MJOIN).replace(MBR, " ") for l in para]
+            desk = [l.removesuffix(MJOIN).replace(MBR, sep or "") for l in para]  # ja: no space
             phone, carry = [], ""
             for l in para:
                 parts = l.removesuffix(MJOIN).split(MBR)
