@@ -140,6 +140,10 @@ html[lang] .body .ln.ln--m {
   display: none;
 }
 
+.nobr {
+  white-space: nowrap;
+}
+
 /* Japanese: lines break only at the phrase boundaries build.py marks with
    <wbr> (BudouX), never inside a word */
 html[lang="ja"] .body {

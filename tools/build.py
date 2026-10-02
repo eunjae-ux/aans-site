@@ -21,11 +21,9 @@ LANGS = {
         ],
         full_top=658,
         full=[
-            "시그니처 '안곡(ANGOK)' 케이프 패널은 완만하게 휘어진 지붕의 처마에서 왔다.",
-            "처마가 비바람으로부터 집을 지키듯, 이 곡선을 그대로 옷의 뒷면으로 가져와 가장 무방비하게 노출되는 등을 감싼다.",
-            HALF_GAP,
-            "외골격은 몸 바깥에서 신체를 지지하고 보호하는 구조다. 도시라는 감각의 전장 속에서, 조용히 나를 감싸는 것.",
-            "그것이 All About Noirs가 CUT 01에서 말하는 '외골격'이다.",
+            "시그니처 디테일, 안곡(ANGOK) 백 케이프 패널.",
+            "안으로 휘어 든 동아시아 지붕의 처마를 등에서 팔로 이어지는",
+            "곡선의 레이어로 재해석해, 컬렉션 전반에 담았다.",
         ],
         cut=[
             "All About Noirs의 모든 컬렉션은 하나의 장면에서 시작된다. 그 장면은 브랜드 필름의 세계에서 온다.",
@@ -50,13 +48,9 @@ LANGS = {
         ],
         full_top=610,
         full=[
-            "The signature ANGOK cape panel comes from the gently curved eaves of a roof.{m}As the eave{join}",
-            "shields a house from wind and rain, the curve is carried onto the back of the garment —",
-            "covering the back, the body’s most unguarded surface.",
-            HALF_GAP,
-            "An exoskeleton is a structure that supports and protects the body from the outside.",
-            "In the city, a battlefield of the senses, it is what quietly encloses you.{m}That is what{join}",
-            "All About Noirs means by “exoskeleton” in CUT 01.",
+            "The signature detail: the ANGOK back cape panel.",
+            "The incurved eaves of East Asian roofs, reinterpreted as a curved layer running from{join}",
+            "the back to the arm — carried throughout the collection.",
         ],
         cut=[
             "Every All About Noirs collection begins with a single scene. That scene comes from the world of the brand film.",
@@ -81,12 +75,9 @@ LANGS = {
         ],
         full_top=634,
         full=[
-            "シグネチャーの「ANGOK（アンゴク）」ケープパネルは、ゆるやかに反り返る屋根の軒から生まれた。",
-            "軒が風雨から家を守るように、その曲線をそのまま服の背面へ移し、",
-            "最も無防備にさらされる背中を包む。",
-            HALF_GAP,
-            "外骨格とは、身体の外側から支え、守る構造のこと。感覚の戦場である都市のなかで、",
-            "静かに自分を包むもの。それが、All About NoirsがCUT 01で語る「外骨格」である。",
+            "シグネチャーディテールは、「ANGOK（アンゴク）」バックケープパネル。",
+            "内側へと反る東アジアの屋根の軒を、背中から腕へと続く曲線のレイヤーとして{join}",
+            "再解釈し、コレクション全体に通わせた。",
         ],
         cut=[
             "All About Noirsのすべてのコレクションは、ひとつの場面から始まる。その場面は、ブランドフィルムの世界からやってくる。",
@@ -140,12 +131,23 @@ except ImportError:  # without it Japanese lines still build, just without phras
 _KEEP = ("All About Noirs", "CUT 01 : URBAN EXOSKELETON", "CUT 01", "KUROSE.K")
 
 
+# names written without spaces that still must not break (held in a nowrap span)
+_NOBR = ("「ANGOK（アンゴク）」", "ANGOK（アンゴク）")
+
+
 def _cjk(text, lang):
     """Escape a line of copy: brand names held together, and (ja) a
     <wbr> at each phrase boundary, so with word-break: keep-all lines only
     break between phrases, never inside a word."""
     for k in _KEEP:
         text = text.replace(k, k.replace(" ", "\u00a0"))
+    for k in _NOBR:
+        if k in text:
+            head, tail = text.split(k, 1)
+            sep = "<wbr>" if lang == "ja" else ""
+            return _cjk(head, lang) + sep + f'<span class="nobr">{e(k)}</span>' + sep + _cjk(tail, lang)
+    if not text:
+        return ""
     if lang == "ja" and _JA:
         return "<wbr>".join(e(seg) for seg in _JA.parse(text))
     return e(text)
@@ -194,7 +196,7 @@ def lines(items, indent, lang):
             phone, carry = [], ""
             for l in para:
                 parts = l.removesuffix(MJOIN).split(MBR)
-                parts[0] = (carry + " " + parts[0]).strip() if carry else parts[0]
+                parts[0] = (carry + (sep or "") + parts[0]).strip() if carry else parts[0]  # ja: no space
                 if l.endswith(MJOIN):
                     carry = parts.pop()
                 else:
