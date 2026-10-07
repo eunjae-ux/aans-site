@@ -800,6 +800,7 @@ html[lang="en"] .body {
 }
 
 .product__name {
+  text-align: center;
   font-family: var(--font-en);
   font-weight: 300;
   font-size: 14px;
@@ -825,10 +826,50 @@ html[lang="en"] .body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-size: 22px;
-  line-height: 28px;
+  font-size: 28px;
+  line-height: 34px;
   color: var(--gray01);
   text-transform: uppercase;
+}
+
+/* the schedule, set as written (no uppercase), like the venue lines */
+.launch__dates {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+  color: var(--gray01);
+}
+
+.launch__note {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0;
+  opacity: 0.7;
+  text-wrap: balance; /* phones: two even lines */
+}
+
+/* Korean / Japanese notes in their own type (Oswald has no Hangul or kana);
+   Japanese breaks between phrases only */
+html[lang="ko"] .launch__note,
+html[lang="ja"] .launch__note {
+  font-family: var(--font-kr);
+}
+
+html[lang="ja"] .launch__note {
+  font-family: "Pretendard JP", "Pretendard", sans-serif;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) {
+  .launch__note {
+    white-space: nowrap; /* one line wherever it fits */
+  }
 }
 
 .launch__place {
@@ -1063,12 +1104,17 @@ html[lang="en"] .body {
   }
 
   .launch__lines {
-    font-size: 18px;
-    line-height: 24px;
+    font-size: 22px;
+    line-height: 28px;
   }
 
-  .launch__place {
+  .launch__place,
+  .launch__dates {
     font-size: 14px;
+  }
+
+  .launch__note {
+    font-size: 12px;
   }
 
 }

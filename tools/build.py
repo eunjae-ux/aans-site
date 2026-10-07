@@ -12,6 +12,7 @@ LANGS = {
     "kr": dict(
         lang="ko", dir="kr", label="KR",
         desc="도시를 살아가는 이들을 위한 얼반 테크웨어 브랜드, All About Noirs. CUT 01. URBAN EXOSKELETON",
+        launch_note="10.26 (월)은 초청 행사로 진행되어, 일반 고객 입장이 제한될 수 있습니다.",
         intro_w=560, intro_box=540, full_w=538,
         intro=[
             "고유한 세계관 위에 세워진 패션 브랜드.{m}이름 그대로 — 하나의 블랙이 아닌, 수많은 느와르.",
@@ -38,6 +39,7 @@ LANGS = {
     "en": dict(
         lang="en", dir="", label="EN",
         desc="An urban techwear brand for those who live within the city. All About Noirs. CUT 01. URBAN EXOSKELETON",
+        launch_note="10.26 (Mon.) will be reserved for a private event, and access for general visitors may be limited.",
         intro_w=684, intro_box=684, full_w=569,
         intro=[
             "A fashion brand built on an original world.{m}As the name says — not one black, but many noirs.",
@@ -67,6 +69,7 @@ LANGS = {
     "jp": dict(
         lang="ja", dir="jp", label="JP",
         desc="都市を生きる人のためのアーバンテックウェアブランド、All About Noirs。CUT 01. URBAN EXOSKELETON。",
+        launch_note="10.26（月）は招待イベントのため、一般のお客様のご入場を制限させていただく場合がございます。",
         intro_w=652, intro_box=540, full_w=538,
         intro=[
             "独自の世界観の上に築かれた、ファッションブランド。{m}その名のとおり — ひとつのブラックではなく、いくつものノワール。",
@@ -305,6 +308,7 @@ def page(key):
     en_font = ('\n  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" />'
                if key == "en" else "")
     jp_font = ('\n  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&display=swap" />'
+               '\n  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-jp.min.css" />'
                if key == "jp" else "")
 
     stories = []
@@ -482,8 +486,11 @@ def page(key):
       <div class="launch reveal">
         <div class="launch__lines">
           <p>LAUNCH POP-UP</p>
-          <p>CUT 01. URBAN EXOSKELETON</p>
-          <p>2026. 10.24 SAT - 11.01 SUN</p>
+        </div>
+        <div class="launch__dates">
+          <p>Pre-opening (Invitation Only) 10.24 Sat.</p>
+          <p>Open to the Public 10.25 Sun. – 11.1 Sun.</p>
+          <p class="launch__note" data-t="launch-note">{_cjk(L["launch_note"], L["lang"])}</p>
         </div>
         <p class="launch__place">RAND OMOTESANDO TOKYO<br />Jingumae Court, 4-24-3 Jingumae, Shibuya, Tokyo</p>
       </div>
