@@ -766,36 +766,20 @@ html[lang="en"] .body {
   gap: 7px;
 }
 
+/* Each card is one full-bleed 2:3 shot (Figma PD_list 2668:2491: 600×900
+   frames, exported as composed, 2×) */
 .product__media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 260 / 340;
-  /* gradient box is 464px tall against a ~399px card */
-  background: linear-gradient(to bottom, #787878 58%, #343434 116%);
-}
-
-/* Figma NOISE on the card background (monotone, #000 @25%, size 0.5,
-   density 100%): measured on Figma's render as ~13% darkening with ±3.6%
-   grain. It sits on the background only — under the product photo. */
-.product__media::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("img/noise-dark@2x.webp") repeat 0 0 / 128px 128px;
-  pointer-events: none;
+  aspect-ratio: 2 / 3;
+  background: #1a1a1a;
 }
 
 .product__media img {
-  position: absolute;
-  top: var(--pt);
-  bottom: var(--pb);
-  left: calc(50% + var(--px) * 100% / 314.2); /* design px on the 314.2px card, scaled with it */
-  aspect-ratio: 2880 / 3840;
-  width: auto;
-  height: calc(100% - var(--pt) - var(--pb));
-  max-width: none;
-  transform: translateX(-50%);
-  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   pointer-events: none;
 }
 
