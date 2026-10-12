@@ -766,12 +766,12 @@ html[lang="en"] .body {
   gap: 7px;
 }
 
-/* Each card is one full-bleed 2:3 shot (Figma PD_list 2668:2491: 600×900
+/* Each card is one full-bleed 3:4 shot (Figma PD_list 2668:2491: 600×800
    frames, exported as composed, 2×) */
 .product__media {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 2 / 3;
+  aspect-ratio: 3 / 4;
   background: #1a1a1a;
 }
 
