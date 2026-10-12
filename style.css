@@ -880,12 +880,6 @@ html[lang="ja"] .launch__note {
   }
 }
 
-/* JP: the pop-up title in Japanese (Oswald has no kana) */
-html[lang="ja"] .launch__lines {
-  font-family: "Pretendard JP", "Pretendard", sans-serif;
-  font-weight: 500;
-}
-
 /* JP venue: Latin stays Oswald, the kanji fall through to Pretendard JP */
 html[lang="ja"] .launch__place {
   font-family: "Oswald", "Pretendard JP", "Pretendard", sans-serif;

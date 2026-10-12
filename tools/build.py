@@ -68,14 +68,13 @@ LANGS = {
     ),
     "jp": dict(
         lang="ja", dir="jp", label="JP",
-        # title / description / OG, brand h1 reading, pop-up title and venue
+        # title / description / OG, brand h1 reading and pop-up venue
         # from the SEO guide (SEO설정가이드_KR.xlsx). Pop-up copy: review once
         # the event is over.
         desc="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）日本公式サイト。独自の世界観の上に築かれた、ファッションブランド。ファーストコレクション「CUT 01. URBAN EXOSKELETON」と、東京・表参道のポップアップ情報をご紹介します。",
         title="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）公式サイト",
         site_name="ALL ABOUT NOIRS",
         brand_reading="オール・アバウト・ノワールズ",
-        launch_title="オール・アバウト・ノワールズ ポップアップ",
         launch_place="東京都渋谷区神宮前4-24-3 Jingumae Court",
         launch_note="10.26（月）は招待イベントのため、一般のお客様のご入場を制限させていただく場合がございます。",
         intro_w=652, intro_box=540, full_w=538,
@@ -509,7 +508,7 @@ def page(key):
 
       <div class="launch reveal">
         <div class="launch__lines">
-          <p>{L.get("launch_title", "LAUNCH POP-UP")}</p>
+          <p>LAUNCH POP-UP</p>
         </div>
         <div class="launch__dates">
           <p>Pre-opening (Invitation Only) 10.24 Sat.</p>
