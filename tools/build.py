@@ -68,7 +68,15 @@ LANGS = {
     ),
     "jp": dict(
         lang="ja", dir="jp", label="JP",
-        desc="都市を生きる人のためのアーバンテックウェアブランド、All About Noirs。CUT 01. URBAN EXOSKELETON。",
+        # title / description / OG, brand h1 reading, pop-up title and venue
+        # from the SEO guide (SEO설정가이드_KR.xlsx). Pop-up copy: review once
+        # the event is over.
+        desc="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）日本公式サイト。独自の世界観の上に築かれた、ファッションブランド。ファーストコレクション「CUT 01. URBAN EXOSKELETON」と、東京・表参道のポップアップ情報をご紹介します。",
+        title="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）公式サイト",
+        site_name="ALL ABOUT NOIRS",
+        brand_reading="オール・アバウト・ノワールズ",
+        launch_title="オール・アバウト・ノワールズ ポップアップ",
+        launch_place="東京都渋谷区神宮前4-24-3 Jingumae Court",
         launch_note="10.26（月）は招待イベントのため、一般のお客様のご入場を制限させていただく場合がございます。",
         intro_w=652, intro_box=540, full_w=538,
         intro=[
@@ -272,6 +280,16 @@ def _logo_svg():
     return "\n".join(out)
 LOGO_SVG = _logo_svg()
 
+# Google Analytics 4, first thing in <head> (SEO guide)
+GA4 = """  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GPT44CR4KV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-GPT44CR4KV');
+  </script>"""
+
+
 def page(key):
     L = LANGS[key]
     R = "../" if L["dir"] else ""
@@ -283,12 +301,13 @@ def page(key):
         [f'  <link rel="alternate" hreflang="{LANGS[k]["lang"]}" href="{url(k)}" />' for k in LANGS]
         + [f'  <link rel="alternate" hreflang="x-default" href="{url("en")}" />'])
     locale = {"en": "en_US", "jp": "ja_JP", "kr": "ko_KR"}
+    page_title = L.get("title", "All About Noirs — CUT 01. URBAN EXOSKELETON")
     share = "\n".join([
         f'  <link rel="canonical" href="{url(key)}" />',
         '  <meta property="og:type" content="website" />',
-        '  <meta property="og:site_name" content="All About Noirs" />',
+        f'  <meta property="og:site_name" content="{L.get("site_name", "All About Noirs")}" />',
         f'  <meta property="og:url" content="{url(key)}" />',
-        '  <meta property="og:title" content="All About Noirs — CUT 01. URBAN EXOSKELETON" />',
+        f'  <meta property="og:title" content="{e(page_title)}" />',
         f'  <meta property="og:description" content="{e(L["desc"])}" />',
         f'  <meta property="og:image" content="{SITE}/og-image.jpg" />',
         '  <meta property="og:image:width" content="1200" />',
@@ -297,10 +316,13 @@ def page(key):
         f'  <meta property="og:locale" content="{locale[key]}" />',
     ] + [f'  <meta property="og:locale:alternate" content="{locale[k]}" />' for k in LANGS if k != key] + [
         '  <meta name="twitter:card" content="summary_large_image" />',
-        '  <meta name="twitter:title" content="All About Noirs — CUT 01. URBAN EXOSKELETON" />',
+        f'  <meta name="twitter:title" content="{e(page_title)}" />',
         f'  <meta name="twitter:description" content="{e(L["desc"])}" />',
         f'  <meta name="twitter:image" content="{SITE}/og-image.jpg" />',
     ])
+    # the brand heading is the page's h1; JP adds its katakana reading
+    brand = (f'<h1 class="title">ALL ABOUT NOIRS<br />\n        <span class="brand-name-ja">{L["brand_reading"]}</span>\n      </h1>'
+             if "brand_reading" in L else '<h2 class="title">ALL ABOUT NOIRS</h2>')
     # The list holds only the other languages, without brackets.
     menu = "\n".join(
         f'          <li><a href="{R}{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}index.html" hreflang="{LANGS[k]["lang"]}"'
@@ -336,11 +358,12 @@ def page(key):
     doc = f'''<!doctype html>
 <html lang="{L["lang"]}">
 <head>
+{GA4}
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- status bar / browser chrome tint: the page's black-noise background on average -->
   <meta name="theme-color" content="#101010" />
-  <title>All About Noirs — CUT 01. URBAN EXOSKELETON</title>
+  <title>{e(page_title)}</title>
   <meta name="description" content="{e(L["desc"])}" />
   <link rel="icon" href="{R}favicon.ico" sizes="48x48" />
   <link rel="icon" href="{R}favicon.svg" type="image/svg+xml" />
@@ -428,7 +451,7 @@ def page(key):
 
     <!-- 02_Collection Info -->
     <section class="intro reveal">
-      <h2 class="title">ALL ABOUT NOIRS</h2>
+      {brand}
       <div class="body intro__body" data-t="intro" style="--w:{L["intro_w"]};--box:{L["intro_box"]}">
 {lines(L["intro"], 8, L["lang"])}
       </div>
@@ -486,14 +509,14 @@ def page(key):
 
       <div class="launch reveal">
         <div class="launch__lines">
-          <p>LAUNCH POP-UP</p>
+          <p>{L.get("launch_title", "LAUNCH POP-UP")}</p>
         </div>
         <div class="launch__dates">
           <p>Pre-opening (Invitation Only) 10.24 Sat.</p>
           <p>Open to the Public 10.25 Sun. – 11.1 Sun.</p>
           <p class="launch__note" data-t="launch-note">{_cjk(L["launch_note"], L["lang"])}</p>
         </div>
-        <p class="launch__place">RAND OMOTESANDO TOKYO<br />Jingumae Court, 4-24-3 Jingumae, Shibuya, Tokyo</p>
+        <p class="launch__place">RAND OMOTESANDO TOKYO<br />{L.get("launch_place", "Jingumae Court, 4-24-3 Jingumae, Shibuya, Tokyo")}</p>
       </div>
 
       <footer class="footer">

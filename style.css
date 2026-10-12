@@ -123,6 +123,17 @@ html.lenis body {
   color: var(--gray01);
 }
 
+/* JP brand heading: katakana reading under the logotype */
+.brand-name-ja {
+  display: block;
+  margin-top: 8px;
+  font-family: "Pretendard JP", "Pretendard", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.1em;
+}
+
 /* Text xs/Regular: 12px, one line every 24px (12px line + 12px gap). */
 .body {
   font-size: 12px;
@@ -867,6 +878,17 @@ html[lang="ja"] .launch__note {
   .launch__note {
     white-space: nowrap; /* one line wherever it fits */
   }
+}
+
+/* JP: the pop-up title in Japanese (Oswald has no kana) */
+html[lang="ja"] .launch__lines {
+  font-family: "Pretendard JP", "Pretendard", sans-serif;
+  font-weight: 500;
+}
+
+/* JP venue: Latin stays Oswald, the kanji fall through to Pretendard JP */
+html[lang="ja"] .launch__place {
+  font-family: "Oswald", "Pretendard JP", "Pretendard", sans-serif;
 }
 
 .launch__place {
