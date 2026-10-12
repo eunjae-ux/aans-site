@@ -103,7 +103,8 @@ LANGS = {k: LANGS[k] for k in ("en", "jp", "kr")}
 
 STORY_EN = ["EASTERN STRUCTURE", "URBAN ENCLOSURE", "NOIR DENSITY"]
 STORY_IMG = ["08-2652_A-1", "09-2673_B-1", "08-2608_B-2"]
-PRODUCTS = [  # in collection order; photos are img/product-1…9 (Figma PD_list 2668:2491)
+PRODUCTS = [  # in collection order; photos are img/product-1…9 (Figma PD_list 2668:2491),
+              # hover shots img/product-1…9-hover (PD_Hover 2668:2497)
     "SHELTER 3LAYER JUMPER",
     "SHELTER 3LAYER JACKET",
     "SHELTER 3LAYER COAT",
@@ -325,7 +326,7 @@ def page(key):
     </section>''')
 
     products = "\n".join(f'''          <li class="product">
-            <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}</div>
+            <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
             <p class="product__name">{n}</p>
           </li>''' for i, n in enumerate(PRODUCTS, 1))
 

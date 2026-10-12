@@ -783,6 +783,19 @@ html[lang="en"] .body {
   pointer-events: none;
 }
 
+/* Second shot (Figma PD_Hover 2668:2497) laid over the first, shown on hover
+   on devices with a real pointer */
+.product__media .product__hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .product:hover .product__hover { opacity: 1; }
+}
+
 .product__name {
   text-align: center;
   font-family: var(--font-en);
