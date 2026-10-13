@@ -564,6 +564,13 @@ function absolutizeUrls() {
 
 function copyBlock(from, to) {
   const wasVisible = to.classList.contains("is-visible");
+  // a different element (the brand heading is an h1 on JP, h2 elsewhere)
+  if (from.tagName !== to.tagName) {
+    const el = document.importNode(from, true);
+    if (wasVisible) el.classList.add("is-visible");
+    to.replaceWith(el);
+    return;
+  }
   for (const { name } of [...to.attributes]) to.removeAttribute(name);
   for (const { name, value } of from.attributes) to.setAttribute(name, value);
   if (wasVisible) to.classList.add("is-visible");

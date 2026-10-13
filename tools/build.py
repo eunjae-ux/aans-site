@@ -321,8 +321,8 @@ def page(key):
         f'  <meta name="twitter:image" content="{SITE}/og-image.jpg" />',
     ])
     # the brand heading is the page's h1; JP adds its katakana reading
-    brand = (f'<h1 class="title">ALL ABOUT NOIRS<br />\n        <span class="brand-name-ja">{L["brand_reading"]}</span>\n      </h1>'
-             if "brand_reading" in L else '<h2 class="title">ALL ABOUT NOIRS</h2>')
+    brand = (f'<h1 class="title" data-t="brand">ALL ABOUT NOIRS<br />\n        <span class="brand-name-ja">{L["brand_reading"]}</span>\n      </h1>'
+             if "brand_reading" in L else '<h2 class="title" data-t="brand">ALL ABOUT NOIRS</h2>')
     # The list holds only the other languages, without brackets.
     menu = "\n".join(
         f'          <li><a href="{R}{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}index.html" hreflang="{LANGS[k]["lang"]}"'
@@ -508,7 +508,7 @@ def page(key):
       </div>
 
       <div class="launch reveal">
-        <div class="launch__lines">
+        <div class="launch__lines" data-t="launch-title">
           <p>{L.get("launch_title", "LAUNCH POP-UP")}</p>
         </div>
         <div class="launch__dates">
@@ -516,7 +516,7 @@ def page(key):
           <p>Open to the Public 10.25 Sun. – 11.1 Sun.</p>
           <p class="launch__note" data-t="launch-note">{_cjk(L["launch_note"], L["lang"])}</p>
         </div>
-        <p class="launch__place">RAND OMOTESANDO TOKYO<br />{L.get("launch_place", "Jingumae Court, 4-24-3 Jingumae, Shibuya, Tokyo")}</p>
+        <p class="launch__place" data-t="launch-place">RAND OMOTESANDO TOKYO<br />{L.get("launch_place", "Jingumae Court, 4-24-3 Jingumae, Shibuya, Tokyo")}</p>
       </div>
 
       <footer class="footer">
