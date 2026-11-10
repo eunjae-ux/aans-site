@@ -504,8 +504,9 @@ def page(key):
 
       <div class="launch reveal">
         <div class="launch__lines" data-t="launch-title">
-          <p>NEXT POP-UP : SEOUL COMING SOON</p>
+          <p>NEXT POP-UP : SEOUL</p>
         </div>
+        <p class="launch__soon">COMING SOON</p>
       </div>
 
       <footer class="footer">

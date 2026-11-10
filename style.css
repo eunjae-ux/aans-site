@@ -880,6 +880,15 @@ html[lang="ja"] .launch__note {
   }
 }
 
+/* small line under the next pop-up's title */
+.launch__soon {
+  margin-top: -20px; /* sits close under the title (the block's gap is 32px) */
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.32px;
+  color: var(--gray01);
+}
+
 .launch__place {
   font-size: 16px;
   line-height: 24px;
@@ -1117,7 +1126,8 @@ html[lang="ja"] .launch__note {
   }
 
   .launch__place,
-  .launch__dates {
+  .launch__dates,
+  .launch__soon {
     font-size: 14px;
   }
 
