@@ -68,8 +68,8 @@ LANGS = {
         lang="ja", dir="jp", label="JP",
         # title / description / OG and brand h1 reading
         # from the SEO guide (SEO설정가이드_KR.xlsx). Pop-up copy: review once
-        # the event is over.
-        desc="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）日本公式サイト。独自の世界観の上に築かれた、ファッションブランド。ファーストコレクション「CUT 01. URBAN EXOSKELETON」と、東京・表参道のポップアップ情報をご紹介します。",
+        # the event is over (Tokyo done; now points to Seoul).
+        desc="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）日本公式サイト。独自の世界観の上に築かれた、ファッションブランド。ファーストコレクション「CUT 01. URBAN EXOSKELETON」をご紹介します。次回ポップアップはソウルにて開催予定です。",
         title="ALL ABOUT NOIRS（オール・アバウト・ノワールズ）公式サイト",
         site_name="ALL ABOUT NOIRS",
         brand_reading="オール・アバウト・ノワールズ",
