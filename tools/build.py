@@ -510,8 +510,10 @@ def page(key):
       </div>
 
       <footer class="footer">
-        <p class="footer__copy">© 2026 All About Noirs</p>
-        <a class="footer__link" href="https://www.instagram.com/allaboutnoirs/" target="_blank" rel="noopener">Instagram</a>
+        <div class="footer__left">
+          <p class="footer__copy">© 2026 All About Noirs</p>
+          <a class="footer__link" href="https://www.instagram.com/allaboutnoirs/" target="_blank" rel="noopener">Instagram</a>
+        </div>
         <button class="footer__top" type="button" data-to-top>
           Go to top
           <svg width="8" height="9" viewBox="0 0 7 8" fill="none" aria-hidden="true"><path d="M3.5 7.5V1M1 3.5 3.5 1 6 3.5" stroke="currentColor" stroke-width="0.8"/></svg>
