@@ -913,6 +913,7 @@ html[lang="ja"] .launch__note {
 
 /* copyright on the left, "Go to top" on the right, same type */
 .footer__copy,
+.footer__link,
 .footer__top {
   font-family: var(--font-en);
   font-size: 12px;
@@ -928,6 +929,21 @@ html[lang="ja"] .launch__note {
   background: none;
   border: 0;
   cursor: pointer;
+}
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+}
+
+.footer__link svg {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer__link:hover svg {
+  transform: translate(2px, -2px);
 }
 
 .footer__top svg {
