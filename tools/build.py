@@ -345,6 +345,7 @@ def page(key):
     products = "\n".join(f'''          <li class="product">
             <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
             <p class="product__name">{n}</p>
+            <p class="product__release">RELEASE 01.2027</p>
           </li>''' for i, n in enumerate(PRODUCTS, 1))
 
     cut_cls = "body cut__body"

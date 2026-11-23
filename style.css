@@ -816,6 +816,19 @@ html[lang="en"] .body {
   color: var(--gray01);
 }
 
+/* release month, small under the name (same in every language) */
+.product__release {
+  margin-top: -4px;
+  text-align: center;
+  font-family: var(--font-en);
+  font-weight: 300;
+  font-size: 11px;
+  line-height: normal;
+  letter-spacing: 0.04em;
+  color: var(--gray01);
+  opacity: 0.6;
+}
+
 .launch {
   min-height: 400px;
   margin-top: calc(166 * var(--s));
@@ -1133,6 +1146,10 @@ html[lang="ja"] .launch__note {
 
   .product__name {
     font-size: 12px; /* fits the narrower cards on one line */
+  }
+
+  .product__release {
+    font-size: 10px;
   }
 
   .launch {
