@@ -494,12 +494,20 @@ html[lang="en"] .body {
   opacity: 1;
 }
 
-/* Slideshow over the KV photo (main.js): each shot fades in over the one
-   before and drifts slowly closer while it is on screen */
+/* Slideshow over the KV photo (main.js), timed after the campaign film:
+   plain crossfades, each shot drifting only slightly, a fade to black at the
+   end of the round */
 .kv__slides {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: var(--black);
+  opacity: 0;
+  transition: opacity 1.3s linear;
+}
+
+.kv__slides.is-playing {
+  opacity: 1;
 }
 
 .kv__slide {
@@ -511,12 +519,7 @@ html[lang="en"] .body {
   object-fit: cover;
   object-position: var(--x, 50%) 40%;
   opacity: 0;
-  transition: opacity 1.4s cubic-bezier(0.33, 0, 0.2, 1);
   will-change: opacity, transform;
-}
-
-.kv__slide.is-on {
-  opacity: 1;
 }
 
 .kv__text {

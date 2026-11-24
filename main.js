@@ -90,48 +90,74 @@ if (kv) {
     update();
   }
 
-  // Slideshow: a few seconds after the first screen is up, the shots fade in
-  // one over another, each drifting slowly closer, and keep looping. A shot's
-  // file is only fetched just before it's needed; hidden tabs pause it.
+  // Slideshow, timed after the campaign film (16.6s a round): plain linear
+  // crossfades, each shot drifting only slightly while it's up, then a fade
+  // to black and the first shot again. It starts right after the intro (or
+  // once the first screen is up), fading in over the KV photo.
   const slides = [...kv.querySelectorAll(".kv__slide")];
-  if (slides.length) {
-    const FIRST = 2500; // the KV photo alone first
-    const HOLD = 2600; // each shot fully on screen
-    const FADE = 1400; // matches .kv__slide's opacity transition
-    let cur = -1;
-    const load = (el) => {
-      if (!el.dataset.srcset) return;
-      el.srcset = el.dataset.srcset;
-      el.src = el.dataset.src;
-      delete el.dataset.srcset;
+  const stage = kv.querySelector(".kv__slides");
+  if (slides.length === 5) {
+    const T = 16.6; // seconds per round
+    // fade in from → fully on → hidden again (under the next shot), and the
+    // drift from → to over that time
+    const SHOTS = [
+      { in: 0, on: 0, off: 3.95, from: "translateX(-1%) scale(1.04)", to: "translateX(1%) scale(1.03)" },
+      { in: 2.6, on: 3.9, off: 7.65, from: "scale(1)", to: "scale(1.04)" },
+      { in: 5.9, on: 7.6, off: 10.25, from: "translateX(0) scale(1.02)", to: "translateX(1%) scale(1.02)" },
+      { in: 9.4, on: 10.2, off: 14, from: "translateY(1.5%) scale(1.06)", to: "translateY(-1.5%) scale(1.06)" },
+      { in: 12.5, on: 13.95, off: 15.85, out: 16.5, from: "scale(1)", to: "scale(1.05)" },
+    ];
+    const o = (s) => Math.min(s / T, 1);
+    const play = () => {
+      const opts = { duration: T * 1000, iterations: Infinity, easing: "linear" };
+      slides.forEach((el, k) => {
+        const s = SHOTS[k];
+        const fade =
+          k === 0
+            ? [
+                { opacity: 1, offset: 0 },
+                { opacity: 1, offset: o(s.off) },
+                { opacity: 0, offset: o(s.off + 0.01) },
+                { opacity: 0, offset: o(16.5) },
+                { opacity: 1, offset: 1 },
+              ]
+            : [
+                { opacity: 0, offset: 0 },
+                { opacity: 0, offset: o(s.in) },
+                { opacity: 1, offset: o(s.on) },
+                { opacity: 1, offset: o(s.off) },
+                { opacity: 0, offset: o(s.out ?? s.off + 0.01) },
+                { opacity: 0, offset: 1 },
+              ];
+        el.style.zIndex = k;
+        el.animate(fade, opts);
+        if (reduced.matches) return;
+        const end = s.out ?? s.off;
+        el.animate(
+          [
+            { transform: s.from, offset: 0 },
+            { transform: s.from, offset: o(s.in) },
+            { transform: s.to, offset: o(end) },
+            { transform: s.from, offset: o(end + 0.01) },
+            { transform: s.from, offset: 1 },
+          ].filter((f, i, a) => i === 0 || f.offset > a[i - 1].offset),
+          opts
+        );
+      });
+      stage.classList.add("is-playing");
     };
-    const show = async () => {
-      const next = (cur + 1) % slides.length;
-      const el = slides[next];
-      load(el);
-      load(slides[(next + 1) % slides.length]);
-      await (el.decode ? el.decode().catch(() => {}) : Promise.resolve());
-      el._drift?.cancel();
-      if (!reduced.matches)
-        el._drift = el.animate([{ transform: "scale(1)" }, { transform: "scale(1.08)" }], {
-          duration: HOLD + FADE * 2,
-          easing: "linear",
-          fill: "forwards",
-        });
-      const prev = slides[cur];
-      slides.forEach((s) => (s.style.zIndex = s === el ? 2 : s === prev ? 1 : 0));
-      el.classList.add("is-on");
-      if (prev) setTimeout(() => prev.classList.remove("is-on"), FADE);
-      cur = next;
-      setTimeout(tick, HOLD + FADE);
+    const begin = async () => {
+      slides.forEach((el) => {
+        el.srcset = el.dataset.srcset;
+        el.src = el.dataset.src;
+      });
+      // the first two shots ready before it starts; the rest load meanwhile
+      await Promise.all(slides.slice(0, 2).map((el) => el.decode().catch(() => {})));
+      play();
     };
-    const tick = () => {
-      if (document.hidden) document.addEventListener("visibilitychange", tick, { once: true });
-      else show();
-    };
-    const begin = () => setTimeout(tick, FIRST);
     if (document.documentElement.classList.contains("intro-active"))
       window.addEventListener("intro:done", begin, { once: true });
+    else if (kv.classList.contains("is-ready")) setTimeout(begin, 1600);
     else begin();
   }
 }
