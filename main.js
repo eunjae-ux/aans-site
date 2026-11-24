@@ -112,6 +112,10 @@ if (kv) {
       { in: 12.5, on: 13.95, off: 15.85, out: T, move: PUSH },
     ];
     const o = (s) => Math.min(s / T, 1);
+    // the first shot comes back under the last one at BACK; at the loop point
+    // it is this far into its -2% → 2% pan
+    const BACK = 15.81;
+    const LOOP_X = -0.96; // = -2 + 4 * (T - BACK) / (T - BACK + 3.95)
     const play = () => {
       const opts = { duration: T * 1000, iterations: Infinity, easing: "linear" };
       slides.forEach((el, k) => {
@@ -122,9 +126,9 @@ if (kv) {
                 { opacity: 1, offset: 0 },
                 { opacity: 1, offset: o(s.off) },
                 { opacity: 0, offset: o(s.off + 0.01) },
-                { opacity: 0, offset: o(15.8) },
+                { opacity: 0, offset: o(BACK - 0.01) },
                 // back under the last shot, which fades off it into the next round
-                { opacity: 1, offset: o(15.81) },
+                { opacity: 1, offset: o(BACK) },
                 { opacity: 1, offset: 1 },
               ]
             : [
@@ -139,6 +143,22 @@ if (kv) {
         el.animate(fade, opts);
         if (reduced.matches) return;
         const end = s.out ?? s.off;
+        if (k === 0) {
+          // the first shot already pans while it shows under the last one, so
+          // the move runs on across the loop instead of starting from a stop
+          // (its opening frame, LOOP_X, is repeated in style.css and intro.js)
+          el.animate(
+            [
+              { transform: `translateX(${LOOP_X}%) scale(1.08)`, offset: 0 },
+              { transform: s.move[1], offset: o(s.off) },
+              { transform: s.move[0], offset: o(s.off + 0.01) },
+              { transform: s.move[0], offset: o(BACK) },
+              { transform: `translateX(${LOOP_X}%) scale(1.08)`, offset: 1 },
+            ],
+            opts
+          );
+          return;
+        }
         el.animate(
           [
             { transform: s.move[0], offset: 0 },

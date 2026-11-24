@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124135224";
-import { loadLogoTexture } from "./logoTexture.js?v=20261124135224";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261125081328";
+import { loadLogoTexture } from "./logoTexture.js?v=20261125081328";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -22,8 +22,8 @@ const DESIGN = { w: 1440, h: 990 };
 const GLYPH = { h: 520, cy: 489.8, aspect: 68 / 46 };
 // img/kv-slide-1 (landscape) and kv-slide-1-v (portrait screens), placed like
 // .kv__slide: object-position, then its opening frame (main.js PAN_X[0])
-const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4, scale: 1.08, dx: -0.02 };
-const PHOTO_V = { aspect: 2880 / 4580, ax: 0.5, ay: 0.3, scale: 1.08, dx: -0.02 };
+const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4, scale: 1.08, dx: -0.0096 };
+const PHOTO_V = { aspect: 2880 / 4580, ax: 0.5, ay: 0.3, scale: 1.08, dx: -0.0096 };
 const PAD = 0.22; // logoTexture's padding on each side
 const ZOOM_MAX = 5; // logo scale at the end of the zoom
 const TOUCH = window.matchMedia("(hover: none)").matches;
