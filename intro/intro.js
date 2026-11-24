@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124133818";
-import { loadLogoTexture } from "./logoTexture.js?v=20261124133818";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124134933";
+import { loadLogoTexture } from "./logoTexture.js?v=20261124134933";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -20,7 +20,10 @@ import { loadLogoTexture } from "./logoTexture.js?v=20261124133818";
 //   zoom        around the glyph's own centre, which stays at the screen centre
 const DESIGN = { w: 1440, h: 990 };
 const GLYPH = { h: 520, cy: 489.8, aspect: 68 / 46 };
-const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4, scale: 1.08, dx: -0.02 }; // img/kv-slide-1
+// img/kv-slide-1 (landscape) and kv-slide-1-v (portrait screens), placed like
+// .kv__slide: object-position, then its opening frame (main.js PAN_X[0])
+const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4, scale: 1.08, dx: -0.02 };
+const PHOTO_V = { aspect: 2880 / 4580, ax: 0.5, ay: 0.3, scale: 1.08, dx: -0.02 };
 const PAD = 0.22; // logoTexture's padding on each side
 const ZOOM_MAX = 5; // logo scale at the end of the zoom
 const TOUCH = window.matchMedia("(hover: none)").matches;
@@ -146,9 +149,10 @@ async function start() {
     );
 
   // (the sharp photo isn't needed: inside the symbol the real home KV shows)
-  const [{ texture: logoSdf, aspect: logoAspect }, photoBlur, grain, bgNoise] = await Promise.all([
+  const [{ texture: logoSdf, aspect: logoAspect }, photoBlur, photoBlurV, grain, bgNoise] = await Promise.all([
     loadLogoTexture(asset("img/logo-mark.svg")),
     loadTex(asset("img/kv-blur.webp")),
+    loadTex(asset("img/kv-blur-v.webp")),
     loadTex(asset("img/grain.webp")),
     loadTex(asset("../img/noise@2x.webp")), // the page background tile
   ]);
@@ -242,14 +246,16 @@ async function start() {
     anchorScreen.set(0, restY * (1 - zoomT));
 
     // photo: fixed at the home KV placement throughout — the KV's first shot
-    // covering the screen, anchored like .kv__slide (object-position 55% 40%)
-    // in its opening frame: scaled 1.08 about the screen centre and shifted
-    // 2% left (main.js PAN_X[0])
-    const pw = Math.max(vw, vh * PHOTO.aspect);
-    const ph = pw / PHOTO.aspect;
-    const k = PHOTO.scale;
-    const left = vw / 2 + ((vw - pw) * PHOTO.ax - vw / 2) * k + PHOTO.dx * vw;
-    const top = vh / 2 + ((vh - ph) * PHOTO.ay - vh / 2) * k;
+    // (portrait cut on portrait screens) covering the screen like .kv__slide,
+    // in its opening frame: scaled 1.08 about the screen centre, shifted 2% left
+    const portrait = vw <= vh; // style.css (max-aspect-ratio: 1/1)
+    const P = portrait ? PHOTO_V : PHOTO;
+    uniforms.u_photoBlur.value = portrait ? photoBlurV : photoBlur;
+    const pw = Math.max(vw, vh * P.aspect);
+    const ph = pw / P.aspect;
+    const k = P.scale;
+    const left = vw / 2 + ((vw - pw) * P.ax - vw / 2) * k + P.dx * vw;
+    const top = vh / 2 + ((vh - ph) * P.ay - vh / 2) * k;
     photoRect.set(left * dpr, top * dpr, pw * k * dpr, ph * k * dpr);
 
     // the layer fades over the last stretch, uncovering the home page

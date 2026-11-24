@@ -153,6 +153,8 @@ if (kv) {
     };
     const begin = async () => {
       slides.slice(1).forEach((el) => {
+        const source = el.previousElementSibling; // the portrait cut
+        if (source?.dataset.srcset) source.srcset = source.dataset.srcset;
         el.srcset = el.dataset.srcset;
         el.src = el.dataset.src;
       });

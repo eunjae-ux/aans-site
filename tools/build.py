@@ -345,12 +345,22 @@ def page(key):
     # key visual: five shots shown as a slideshow (main.js). The first is the
     # KV itself and loads right away; the others' sources are filled in once
     # the first screen is up, so they never compete with it
-    def kv_slide(i, x):
+    # Portrait screens get the portrait cut of each shot (the <source>).
+    PORTRAIT = "(max-aspect-ratio: 1/1)"
+    def kv_slide(i, style):
+        v = IMG[f"kv-slide-{i}-v"]
+        source = (f'<source media="{PORTRAIT}" srcset="{{R}}img/kv-slide-{i}-v@1x.webp {v["w1"]}w, '
+                  f'{{R}}img/kv-slide-{i}-v@2x.webp {v["w2"]}w" sizes="100vw" />')
         tag = img(f"kv-slide-{i}", "100vw", lazy=False,
-                  extra=f' class="kv__slide" style="--x:{x}"' + (' fetchpriority="high"' if i == 1 else ""))
-        return tag if i == 1 else tag.replace(' src="', ' data-src="').replace(' srcset="', ' data-srcset="')
-    kv_slides = "\n".join("          " + kv_slide(i, x)
-                           for i, x in enumerate(["55%", "62%", "40%", "50%;--y:0%;--o:50% 0%", "55%"], 1))
+                  extra=f' class="kv__slide" style="{style}"' + (' fetchpriority="high"' if i == 1 else ""))
+        if i > 1:
+            source = source.replace(' srcset="', ' data-srcset="')
+            tag = tag.replace(' src="', ' data-src="').replace(' srcset="', ' data-srcset="')
+        return f"<picture>{source}{tag}</picture>"
+    # object-position (landscape --x/--y, portrait --vx/--vy) and, for shot 4,
+    # a transform origin on its top edge so the move never crops the head
+    kv_slides = "\n".join("          " + kv_slide(i, st) for i, st in enumerate([
+        "--x:55%", "--x:62%", "--x:40%", "--x:50%;--y:0%;--vy:0%;--o:50% 0%", "--x:55%"], 1))
     products = "\n".join(f'''          <li class="product">
             <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
             <p class="product__name">{n}</p>

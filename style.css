@@ -531,9 +531,16 @@ html[lang="en"] .body {
   will-change: opacity, transform;
 }
 
+/* portrait screens show the portrait cut of each shot (build.py <source>) */
+@media (max-aspect-ratio: 1/1) {
+  .kv__slide {
+    object-position: var(--vx, 50%) var(--vy, 30%);
+  }
+}
+
 /* the first shot is the KV: on screen before the slideshow starts, in its
    opening frame (main.js PAN_X[0]) */
-.kv__slide:first-child {
+.kv__slides > picture:first-child .kv__slide {
   opacity: 1;
   transform: translateX(-2%) scale(1.08);
 }
