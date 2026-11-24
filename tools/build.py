@@ -342,6 +342,13 @@ def page(key):
       </div>
     </section>''')
 
+    # key-visual slideshow (after the KV photo): sources are filled in by
+    # main.js once the first screen is up, so they never compete with it
+    kv_slides = "\n".join(
+        "          " + img(f"kv-slide-{i}", "100vw", lazy=False,
+                           extra=f' class="kv__slide" style="--x:{x}"')
+        .replace(' src="', ' data-src="').replace(' srcset="', ' data-srcset="')
+        for i, x in enumerate(["55%", "62%", "40%", "50%", "55%"], 1))
     products = "\n".join(f'''          <li class="product">
             <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
             <p class="product__name">{n}</p>
@@ -436,6 +443,9 @@ def page(key):
     <section class="kv">
       <div class="kv__media">
         {img("kv-02-0644", "(max-aspect-ratio: 1440/990) 342vh, 235vw", lazy=False, extra=' fetchpriority="high"')}
+        <div class="kv__slides" aria-hidden="true">
+{kv_slides}
+        </div>
       </div>
       <div class="kv__text">
         <p class="kv__line" style="--b:444;--i:0">CUT 01. URBAN EXOSKELETON</p>

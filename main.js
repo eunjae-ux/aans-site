@@ -89,6 +89,51 @@ if (kv) {
     window.addEventListener("resize", update);
     update();
   }
+
+  // Slideshow: a few seconds after the first screen is up, the shots fade in
+  // one over another, each drifting slowly closer, and keep looping. A shot's
+  // file is only fetched just before it's needed; hidden tabs pause it.
+  const slides = [...kv.querySelectorAll(".kv__slide")];
+  if (slides.length) {
+    const FIRST = 2500; // the KV photo alone first
+    const HOLD = 2600; // each shot fully on screen
+    const FADE = 1400; // matches .kv__slide's opacity transition
+    let cur = -1;
+    const load = (el) => {
+      if (!el.dataset.srcset) return;
+      el.srcset = el.dataset.srcset;
+      el.src = el.dataset.src;
+      delete el.dataset.srcset;
+    };
+    const show = async () => {
+      const next = (cur + 1) % slides.length;
+      const el = slides[next];
+      load(el);
+      load(slides[(next + 1) % slides.length]);
+      await (el.decode ? el.decode().catch(() => {}) : Promise.resolve());
+      el._drift?.cancel();
+      if (!reduced.matches)
+        el._drift = el.animate([{ transform: "scale(1)" }, { transform: "scale(1.08)" }], {
+          duration: HOLD + FADE * 2,
+          easing: "linear",
+          fill: "forwards",
+        });
+      const prev = slides[cur];
+      slides.forEach((s) => (s.style.zIndex = s === el ? 2 : s === prev ? 1 : 0));
+      el.classList.add("is-on");
+      if (prev) setTimeout(() => prev.classList.remove("is-on"), FADE);
+      cur = next;
+      setTimeout(tick, HOLD + FADE);
+    };
+    const tick = () => {
+      if (document.hidden) document.addEventListener("visibilitychange", tick, { once: true });
+      else show();
+    };
+    const begin = () => setTimeout(tick, FIRST);
+    if (document.documentElement.classList.contains("intro-active"))
+      window.addEventListener("intro:done", begin, { once: true });
+    else begin();
+  }
 }
 
 // Footer "Go to top": glide back to the top of the page.
