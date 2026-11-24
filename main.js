@@ -91,22 +91,24 @@ if (kv) {
   }
 
   // Slideshow, timed after the campaign film (16.6s a round): plain linear
-  // crossfades, each shot drifting only slightly while it's up, then a fade
-  // to black and the first shot again. It starts right after the intro (or
-  // once the first screen is up), fading in over the KV photo.
+  // crossfades, each shot drifting closer while it's up, then a fade to
+  // black and the first shot again.
   const slides = [...kv.querySelectorAll(".kv__slide")];
-  const stage = kv.querySelector(".kv__slides");
   if (slides.length === 5) {
     const T = 16.6; // seconds per round
     // fade in from → fully on → hidden again (under the next shot), and the
     // drift from → to over that time
+    // fade in from → fully on → hidden again (under the next shot); each
+    // shot drifts 8% closer over that time
     const SHOTS = [
-      { in: 0, on: 0, off: 3.95, from: "translateX(-1%) scale(1.04)", to: "translateX(1%) scale(1.03)" },
-      { in: 2.6, on: 3.9, off: 7.65, from: "scale(1)", to: "scale(1.04)" },
-      { in: 5.9, on: 7.6, off: 10.25, from: "translateX(0) scale(1.02)", to: "translateX(1%) scale(1.02)" },
-      { in: 9.4, on: 10.2, off: 14, from: "translateY(1.5%) scale(1.06)", to: "translateY(-1.5%) scale(1.06)" },
-      { in: 12.5, on: 13.95, off: 15.85, out: 16.5, from: "scale(1)", to: "scale(1.05)" },
+      { in: 0, on: 0, off: 3.95 },
+      { in: 2.6, on: 3.9, off: 7.65 },
+      { in: 5.9, on: 7.6, off: 10.25 },
+      { in: 9.4, on: 10.2, off: 14 },
+      { in: 12.5, on: 13.95, off: 15.85, out: 16.5 },
     ];
+    const FROM = "scale(1)";
+    const TO = "scale(1.08)";
     const o = (s) => Math.min(s / T, 1);
     const play = () => {
       const opts = { duration: T * 1000, iterations: Infinity, easing: "linear" };
@@ -135,30 +137,30 @@ if (kv) {
         const end = s.out ?? s.off;
         el.animate(
           [
-            { transform: s.from, offset: 0 },
-            { transform: s.from, offset: o(s.in) },
-            { transform: s.to, offset: o(end) },
-            { transform: s.from, offset: o(end + 0.01) },
-            { transform: s.from, offset: 1 },
+            { transform: FROM, offset: 0 },
+            { transform: FROM, offset: o(s.in) },
+            { transform: TO, offset: o(end) },
+            { transform: FROM, offset: o(end + 0.01) },
+            { transform: FROM, offset: 1 },
           ].filter((f, i, a) => i === 0 || f.offset > a[i - 1].offset),
           opts
         );
       });
-      stage.classList.add("is-playing");
     };
     const begin = async () => {
-      slides.forEach((el) => {
+      slides.slice(1).forEach((el) => {
         el.srcset = el.dataset.srcset;
         el.src = el.dataset.src;
       });
-      // the first two shots ready before it starts; the rest load meanwhile
-      await Promise.all(slides.slice(0, 2).map((el) => el.decode().catch(() => {})));
+      // the next shot ready before it starts; the rest load meanwhile
+      await slides[1].decode().catch(() => {});
       play();
     };
+    // the first shot is the KV: it plays on from the intro's last frame, or
+    // once it has faded in on a plain load
     if (document.documentElement.classList.contains("intro-active"))
       window.addEventListener("intro:done", begin, { once: true });
-    else if (kv.classList.contains("is-ready")) setTimeout(begin, 1600);
-    else begin();
+    else setTimeout(begin, 1600);
   }
 }
 

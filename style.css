@@ -501,13 +501,21 @@ html[lang="en"] .body {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--black);
   opacity: 0;
-  transition: opacity 1.3s linear;
+  transition: opacity 1.6s cubic-bezier(0.33, 0, 0.2, 1);
 }
 
-.kv__slides.is-playing {
+/* first load: the first shot fades in; under the intro it's in place from
+   the start (the intro's last frame is this exact shot) */
+.kv.is-ready .kv__slides,
+.intro-active .kv__slides,
+.intro-done .kv__slides {
   opacity: 1;
+}
+
+.intro-active .kv__slides,
+.intro-done .kv__slides {
+  transition: none;
 }
 
 .kv__slide {
@@ -520,6 +528,11 @@ html[lang="en"] .body {
   object-position: var(--x, 50%) 40%;
   opacity: 0;
   will-change: opacity, transform;
+}
+
+/* the first shot is the KV: on screen before the slideshow starts */
+.kv__slide:first-child {
+  opacity: 1;
 }
 
 .kv__text {

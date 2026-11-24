@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124132115";
-import { loadLogoTexture } from "./logoTexture.js?v=20261124132115";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124132355";
+import { loadLogoTexture } from "./logoTexture.js?v=20261124132355";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -15,12 +15,12 @@ import { loadLogoTexture } from "./logoTexture.js?v=20261124132115";
 //
 // Design geometry (1440×990 frame):
 //   glyph box   x 335.5–1104, y 229.6–749.9 (520 tall, centred, 5px above middle)
-//   photo       the home KV: 3390px box at (-501, -284), i.e. sized by
-//               max(235vw, 342vh) with (36.02%, 28.37%) at the screen centre
+//   photo       the home KV's first shot (img/kv-slide-1), covering the
+//               screen like .kv__slide (object-fit cover, 55% 40%)
 //   zoom        around the glyph's own centre, which stays at the screen centre
 const DESIGN = { w: 1440, h: 990 };
 const GLYPH = { h: 520, cy: 489.8, aspect: 68 / 46 };
-const PHOTO = { box: 3390, aspect: 3390 / 2746, fx: 0.3602, fy: 0.2837 };
+const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4 }; // img/kv-slide-1
 const PAD = 0.22; // logoTexture's padding on each side
 const ZOOM_MAX = 5; // logo scale at the end of the zoom
 const TOUCH = window.matchMedia("(hover: none)").matches;
@@ -241,16 +241,11 @@ async function start() {
     const restY = -((GLYPH.cy - DESIGN.h / 2) * designScale()) / vh; // uv y is up
     anchorScreen.set(0, restY * (1 - zoomT));
 
-    // photo: fixed at the home KV placement throughout
-    // (mobile: zoomed out onto the face — same numbers as style.css)
-    const mobile = vw <= 767;
-    const fx = mobile ? 0.38 : PHOTO.fx;
-    const fy = mobile ? 0.3 : PHOTO.fy;
-    const pw = mobile
-      ? Math.max((0.5 / 0.38) * vw, 1.8 * PHOTO.aspect * vh)
-      : Math.max((PHOTO.box / DESIGN.w) * vw, (PHOTO.box / DESIGN.h) * vh);
+    // photo: fixed at the home KV placement throughout — the KV's first shot
+    // covering the screen, anchored like .kv__slide (object-position 55% 40%)
+    const pw = Math.max(vw, vh * PHOTO.aspect);
     const ph = pw / PHOTO.aspect;
-    photoRect.set((vw / 2 - fx * pw) * dpr, (vh / 2 - fy * ph) * dpr, pw * dpr, ph * dpr);
+    photoRect.set((vw - pw) * PHOTO.ax * dpr, (vh - ph) * PHOTO.ay * dpr, pw * dpr, ph * dpr);
 
     // the layer fades over the last stretch, uncovering the home page
     overlay.style.setProperty("--p", p.toFixed(4));

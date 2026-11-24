@@ -69,10 +69,11 @@ for name, (dw, dh) in WHOLE.items():
     report[name] = save(img, name, True)
     report[name]["scale"] = round(img.size[0] / dw, 2)
 
-# the intro's blurred copy of the KV photo (Figma A_Intro: layer blur 34 on
-# the 3390px-wide photo box = a gaussian of sd 17 box px), at half size
-kv = Image.open(os.path.join(ORIG, "kv-02-0644")).convert("RGB")
-sd = 17 * kv.width / 3390
+# the intro's blurred copy of the KV's first shot (Figma A_Intro: layer blur
+# 34 = a gaussian of sd 17 design px; the shot covers the 1440px frame), at
+# half size
+kv = Image.open(os.path.join(ORIG, "kv-slide-1")).convert("RGB")
+sd = 17 * kv.width / 1440
 half = kv.resize((kv.width // 2, kv.height // 2), Image.LANCZOS).filter(ImageFilter.GaussianBlur(sd / 2))
 half.save(os.path.join(os.path.dirname(HERE), "intro", "img", "kv-blur.webp"), "WEBP", quality=80, method=6)
 

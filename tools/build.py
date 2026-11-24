@@ -342,13 +342,15 @@ def page(key):
       </div>
     </section>''')
 
-    # key-visual slideshow (after the KV photo): sources are filled in by
-    # main.js once the first screen is up, so they never compete with it
-    kv_slides = "\n".join(
-        "          " + img(f"kv-slide-{i}", "100vw", lazy=False,
-                           extra=f' class="kv__slide" style="--x:{x}"')
-        .replace(' src="', ' data-src="').replace(' srcset="', ' data-srcset="')
-        for i, x in enumerate(["55%", "62%", "40%", "50%", "55%"], 1))
+    # key visual: five shots shown as a slideshow (main.js). The first is the
+    # KV itself and loads right away; the others' sources are filled in once
+    # the first screen is up, so they never compete with it
+    def kv_slide(i, x):
+        tag = img(f"kv-slide-{i}", "100vw", lazy=False,
+                  extra=f' class="kv__slide" style="--x:{x}"' + (' fetchpriority="high"' if i == 1 else ""))
+        return tag if i == 1 else tag.replace(' src="', ' data-src="').replace(' srcset="', ' data-srcset="')
+    kv_slides = "\n".join("          " + kv_slide(i, x)
+                           for i, x in enumerate(["55%", "62%", "40%", "50%", "55%"], 1))
     products = "\n".join(f'''          <li class="product">
             <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
             <p class="product__name">{n}</p>
@@ -442,7 +444,6 @@ def page(key):
     <!-- 00_Key Visual: full viewport, the design's crop kept centered -->
     <section class="kv">
       <div class="kv__media">
-        {img("kv-02-0644", "(max-aspect-ratio: 1440/990) 342vh, 235vw", lazy=False, extra=' fetchpriority="high"')}
         <div class="kv__slides" aria-hidden="true">
 {kv_slides}
         </div>
