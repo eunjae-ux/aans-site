@@ -535,7 +535,7 @@ html[lang="en"] .body {
    opening frame (main.js PAN_X[0]) */
 .kv__slide:first-child {
   opacity: 1;
-  transform: translateX(-3%) scale(1.08);
+  transform: translateX(-2%) scale(1.08);
 }
 
 .kv__text {
