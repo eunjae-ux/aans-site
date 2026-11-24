@@ -350,7 +350,7 @@ def page(key):
                   extra=f' class="kv__slide" style="--x:{x}"' + (' fetchpriority="high"' if i == 1 else ""))
         return tag if i == 1 else tag.replace(' src="', ' data-src="').replace(' srcset="', ' data-srcset="')
     kv_slides = "\n".join("          " + kv_slide(i, x)
-                           for i, x in enumerate(["55%", "62%", "40%", "50%", "55%"], 1))
+                           for i, x in enumerate(["55%", "62%", "40%", "50%;--y:0%;--o:50% 0%", "55%"], 1))
     products = "\n".join(f'''          <li class="product">
             <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
             <p class="product__name">{n}</p>

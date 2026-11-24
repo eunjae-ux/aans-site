@@ -525,7 +525,8 @@ html[lang="en"] .body {
   height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: var(--x, 50%) 40%;
+  object-position: var(--x, 50%) var(--y, 40%);
+  transform-origin: var(--o, 50% 50%);
   opacity: 0;
   will-change: opacity, transform;
 }

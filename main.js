@@ -101,7 +101,8 @@ if (kv) {
     // push in 8%. (The first shot's opening frame is repeated in style.css
     // and intro/intro.js.)
     const PAN_X = ["translateX(-3%) scale(1.08)", "translateX(3%) scale(1.08)"];
-    const PAN_Y = ["translateY(-3%) scale(1.08)", "translateY(3%) scale(1.08)"];
+    // (shot 4 is pinned to its top edge, so the head is never cut further)
+    const PAN_Y = ["translateY(0) scale(1.08)", "translateY(-3%) scale(1.08)"];
     const PUSH = ["scale(1)", "scale(1.08)"];
     const SHOTS = [
       { in: 0, on: 0, off: 3.95, move: PAN_X },
