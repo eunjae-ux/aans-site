@@ -90,12 +90,12 @@ if (kv) {
     update();
   }
 
-  // Slideshow, timed after the campaign film (16.6s a round): plain linear
-  // crossfades, each shot drifting closer while it's up, then a fade to
-  // black and the first shot again.
+  // Slideshow, timed after the campaign film (17.2s a round): plain linear
+  // crossfades, each shot moving while it's up; the last shot crossfades
+  // straight back into the first.
   const slides = [...kv.querySelectorAll(".kv__slide")];
   if (slides.length === 5) {
-    const T = 16.6; // seconds per round
+    const T = 17.2; // seconds per round
     // fade in from → fully on → hidden again (under the next shot), and the
     // move over that time: 1 and 3 pan left → right, 4 top → bottom, 2 and 5
     // push in 8%. (The first shot's opening frame is repeated in style.css
@@ -108,7 +108,7 @@ if (kv) {
       { in: 2.6, on: 3.9, off: 7.65, move: PUSH },
       { in: 5.9, on: 7.6, off: 10.25, move: PAN_X },
       { in: 9.4, on: 10.2, off: 14, move: PAN_Y },
-      { in: 12.5, on: 13.95, off: 15.85, out: 16.5, move: PUSH },
+      { in: 12.5, on: 13.95, off: 15.85, out: T, move: PUSH },
     ];
     const o = (s) => Math.min(s / T, 1);
     const play = () => {
@@ -121,7 +121,9 @@ if (kv) {
                 { opacity: 1, offset: 0 },
                 { opacity: 1, offset: o(s.off) },
                 { opacity: 0, offset: o(s.off + 0.01) },
-                { opacity: 0, offset: o(16.5) },
+                { opacity: 0, offset: o(15.8) },
+                // back under the last shot, which fades off it into the next round
+                { opacity: 1, offset: o(15.81) },
                 { opacity: 1, offset: 1 },
               ]
             : [
