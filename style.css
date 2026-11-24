@@ -530,9 +530,11 @@ html[lang="en"] .body {
   will-change: opacity, transform;
 }
 
-/* the first shot is the KV: on screen before the slideshow starts */
+/* the first shot is the KV: on screen before the slideshow starts, in its
+   opening frame (main.js PAN_X[0]) */
 .kv__slide:first-child {
   opacity: 1;
+  transform: translateX(-3%) scale(1.08);
 }
 
 .kv__text {

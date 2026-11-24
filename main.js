@@ -97,18 +97,19 @@ if (kv) {
   if (slides.length === 5) {
     const T = 16.6; // seconds per round
     // fade in from → fully on → hidden again (under the next shot), and the
-    // drift from → to over that time
-    // fade in from → fully on → hidden again (under the next shot); each
-    // shot drifts 8% closer over that time
+    // move over that time: 1 and 3 pan left → right, 4 top → bottom, 2 and 5
+    // push in 8%. (The first shot's opening frame is repeated in style.css
+    // and intro/intro.js.)
+    const PAN_X = ["translateX(-3%) scale(1.08)", "translateX(3%) scale(1.08)"];
+    const PAN_Y = ["translateY(-3%) scale(1.08)", "translateY(3%) scale(1.08)"];
+    const PUSH = ["scale(1)", "scale(1.08)"];
     const SHOTS = [
-      { in: 0, on: 0, off: 3.95 },
-      { in: 2.6, on: 3.9, off: 7.65 },
-      { in: 5.9, on: 7.6, off: 10.25 },
-      { in: 9.4, on: 10.2, off: 14 },
-      { in: 12.5, on: 13.95, off: 15.85, out: 16.5 },
+      { in: 0, on: 0, off: 3.95, move: PAN_X },
+      { in: 2.6, on: 3.9, off: 7.65, move: PUSH },
+      { in: 5.9, on: 7.6, off: 10.25, move: PAN_X },
+      { in: 9.4, on: 10.2, off: 14, move: PAN_Y },
+      { in: 12.5, on: 13.95, off: 15.85, out: 16.5, move: PUSH },
     ];
-    const FROM = "scale(1)";
-    const TO = "scale(1.08)";
     const o = (s) => Math.min(s / T, 1);
     const play = () => {
       const opts = { duration: T * 1000, iterations: Infinity, easing: "linear" };
@@ -137,11 +138,11 @@ if (kv) {
         const end = s.out ?? s.off;
         el.animate(
           [
-            { transform: FROM, offset: 0 },
-            { transform: FROM, offset: o(s.in) },
-            { transform: TO, offset: o(end) },
-            { transform: FROM, offset: o(end + 0.01) },
-            { transform: FROM, offset: 1 },
+            { transform: s.move[0], offset: 0 },
+            { transform: s.move[0], offset: o(s.in) },
+            { transform: s.move[1], offset: o(end) },
+            { transform: s.move[0], offset: o(end + 0.01) },
+            { transform: s.move[0], offset: 1 },
           ].filter((f, i, a) => i === 0 || f.offset > a[i - 1].offset),
           opts
         );

@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124132355";
-import { loadLogoTexture } from "./logoTexture.js?v=20261124132355";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261124132707";
+import { loadLogoTexture } from "./logoTexture.js?v=20261124132707";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -20,7 +20,7 @@ import { loadLogoTexture } from "./logoTexture.js?v=20261124132355";
 //   zoom        around the glyph's own centre, which stays at the screen centre
 const DESIGN = { w: 1440, h: 990 };
 const GLYPH = { h: 520, cy: 489.8, aspect: 68 / 46 };
-const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4 }; // img/kv-slide-1
+const PHOTO = { aspect: 2880 / 1980, ax: 0.55, ay: 0.4, scale: 1.08, dx: -0.03 }; // img/kv-slide-1
 const PAD = 0.22; // logoTexture's padding on each side
 const ZOOM_MAX = 5; // logo scale at the end of the zoom
 const TOUCH = window.matchMedia("(hover: none)").matches;
@@ -243,9 +243,14 @@ async function start() {
 
     // photo: fixed at the home KV placement throughout — the KV's first shot
     // covering the screen, anchored like .kv__slide (object-position 55% 40%)
+    // in its opening frame: scaled 1.08 about the screen centre and shifted
+    // 3% left (main.js PAN_X[0])
     const pw = Math.max(vw, vh * PHOTO.aspect);
     const ph = pw / PHOTO.aspect;
-    photoRect.set((vw - pw) * PHOTO.ax * dpr, (vh - ph) * PHOTO.ay * dpr, pw * dpr, ph * dpr);
+    const k = PHOTO.scale;
+    const left = vw / 2 + ((vw - pw) * PHOTO.ax - vw / 2) * k + PHOTO.dx * vw;
+    const top = vh / 2 + ((vh - ph) * PHOTO.ay - vh / 2) * k;
+    photoRect.set(left * dpr, top * dpr, pw * k * dpr, ph * k * dpr);
 
     // the layer fades over the last stretch, uncovering the home page
     overlay.style.setProperty("--p", p.toFixed(4));
