@@ -98,12 +98,12 @@ if (kv) {
     const T = 17.2; // seconds per round
     // fade in from → fully on → hidden again (under the next shot), and the
     // move over that time: 1 and 3 pan left → right, 4 top → bottom, 2 and 5
-    // push in 8%. (The first shot's opening frame is repeated in style.css
+    // push in 5%. (The first shot's opening frame is repeated in style.css
     // and intro/intro.js.)
     const PAN_X = ["translateX(-2%) scale(1.08)", "translateX(2%) scale(1.08)"];
     // (shot 4 is pinned to its top edge, so the head is never cut further)
     const PAN_Y = ["translateY(0) scale(1.08)", "translateY(-2%) scale(1.08)"];
-    const PUSH = ["scale(1)", "scale(1.08)"];
+    const PUSH = ["scale(1)", "scale(1.05)"];
     const SHOTS = [
       { in: 0, on: 0, off: 3.95, move: PAN_X },
       { in: 2.6, on: 3.9, off: 7.65, move: PUSH },
