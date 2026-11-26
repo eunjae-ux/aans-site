@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261125081328";
-import { loadLogoTexture } from "./logoTexture.js?v=20261125081328";
+import { VERTEX_SHADER, FRAGMENT_SHADER } from "./shaders.js?v=20261126173452";
+import { loadLogoTexture } from "./logoTexture.js?v=20261126173452";
 
 // Intro (Figma A_Intro, 2597:1545), layered over the top of the home page.
 //
@@ -54,17 +54,15 @@ function finish() {
 }
 
 // ---------- staged opening ----------
-// s1 "All About Noirs" → s2 rule → s3 "Urban Exoskeleton" → s4 subline →
-// s5 the masked symbol surfaces behind. Scrolling does nothing until all of
-// it — every piece of copy and the symbol settling into focus — has played.
-// 0.65s between the title pieces, then longer pauses: 1.2s before the
-// subline and 1.5s before the symbol
+// s1 "All About Noirs" → s2 rule → s3 "Urban Exoskeleton" → s5 the masked
+// symbol surfaces behind. Scrolling does nothing until all of it — every
+// piece of copy and the symbol settling into focus — has played.
+// 0.65s between the title pieces, then 1.5s before the symbol
 const STEPS = [
   ["s1", 400],
   ["s2", 1050],
   ["s3", 1700],
-  ["s4", 2900],
-  ["s5", 4400],
+  ["s5", 3200],
 ];
 let symbolAt = null; // time the symbol starts surfacing (performance.now())
 let openingDone = false;
@@ -87,7 +85,7 @@ function completeOpening() {
 // The readable text stays on the parent (aria-label); letters are hidden
 // from assistive tech.
 function splitLetters() {
-  overlay.querySelectorAll(".gate__word > span, .gate__line > span").forEach((el) => {
+  overlay.querySelectorAll(".gate__word > span").forEach((el) => {
     const text = el.textContent;
     el.setAttribute("aria-label", text);
     el.textContent = "";

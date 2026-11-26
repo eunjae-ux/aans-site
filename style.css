@@ -16,7 +16,7 @@
      in --sbw so the design scale uses the real page width */
   --s: calc((100vw - var(--sbw, 0px)) / 1440);
   --gutter: 20px;
-  --font-en: "Oswald", sans-serif;
+  --font-en: "neue-haas-grotesk-display", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-kr: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
 }
 
@@ -117,7 +117,7 @@ html.lenis body {
 
 .title {
   font-family: var(--font-en);
-  font-weight: 500;
+  font-weight: 700;
   font-size: 24px;
   line-height: 24px;
   color: var(--gray01);
@@ -200,10 +200,10 @@ html[lang="ja"] .body {
   }
 }
 
-/* EN body copy (every 12px block) is set in Inter in the design;
+/* EN body copy (every 12px block) is set in Neue Haas Grotesk Text;
    KR / JP stay in Pretendard */
 html[lang="en"] .body {
-  font-family: "Inter", var(--font-kr);
+  font-family: "neue-haas-grotesk-text", "Helvetica Neue", Helvetica, Arial, var(--font-kr);
 }
 
 /* Scroll reveal: a slow rise + fade on a long ease-out, so it settles
@@ -368,18 +368,49 @@ html[lang="en"] .body {
   }
 }
 
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+/* Shop out-link: shown but not live yet */
+.shop {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--white);
+  opacity: 0.4;
+  cursor: default;
+  user-select: none;
+}
+
+.shop__arrow {
+  width: 10px;
+  height: 10px;
+}
+
 /* Language switcher: the active language shows as "[  EN  ]"; the list below
    holds only the other languages (no brackets), centered under the label. */
 .lang {
   position: relative;
+  display: flex;
   flex-shrink: 0;
 }
 
 .lang__current,
 .lang__menu a {
+  display: block;
+  padding: 0;
   font-family: var(--font-en);
+  font-weight: 700;
   font-size: 14px;
-  line-height: normal;
+  line-height: 16px;
   color: var(--white);
   background: none;
   border: 0;
@@ -428,6 +459,7 @@ html[lang="en"] .body {
               stays put and scrolls with the page. --kv-p: 0 → 1 over the KV. */
 .kv {
   --kv-p: 0;
+  --band: 46px; /* release band height */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   /* the photo runs to the bottom of the large viewport, i.e. on under a
@@ -551,10 +583,11 @@ html[lang="en"] .body {
   height: 100%;
   height: max(560px, 100svh); /* the part of the screen the toolbar never covers */
   font-family: var(--font-en);
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 1.7;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
   color: var(--gray01);
+  text-transform: uppercase;
   pointer-events: none;
 }
 
@@ -565,12 +598,61 @@ html[lang="en"] .body {
   position: absolute;
   left: calc(916 / 1440 * 100%);
   right: calc(var(--gutter) + env(safe-area-inset-right, 0px));
-  bottom: calc(var(--b) * 1px);
+  bottom: calc(var(--b) * 1px + var(--band));
   opacity: 0;
   transform: translate3d(0, 18px, 0);
   transition:
     opacity 1.4s ease calc(0.9s + var(--i) * 0.14s),
     transform 1.8s var(--ease-out) calc(0.9s + var(--i) * 0.14s);
+}
+
+/* Release band: a white strip along the bottom of the visible screen
+   (100svh, like the copy) with the release date running across it */
+.kv__band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(max(560px, 100svh) - var(--band));
+  height: var(--band);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--white);
+  color: var(--black);
+  opacity: 0;
+  transition: opacity 1.2s ease 1.4s;
+}
+
+.kv.is-ready .kv__band {
+  opacity: 1;
+}
+
+.kv__band-track {
+  display: flex;
+  flex-shrink: 0;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 22px; /* as the KV copy */
+  line-height: 1;
+  white-space: nowrap;
+  animation: kv-band 40s linear infinite;
+}
+
+.kv__band-track span {
+  padding-right: 48px;
+}
+
+/* the track holds the line 12 times; moving it by half loops seamlessly */
+@keyframes kv-band {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kv__band-track {
+    animation: none;
+  }
 }
 
 .kv.is-ready .kv__line {
@@ -595,7 +677,9 @@ html[lang="en"] .body {
 .intro {
   width: 746px;
   max-width: calc(100% - var(--gutter) * 2);
-  margin: calc(130 * var(--s)) auto 0;
+  /* same gap above the title as below the copy (the image's margin less
+     the copy's 6px of line-height below its last line) */
+  margin: calc(80 * var(--s) - 6px) auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -704,7 +788,7 @@ html[lang="en"] .body {
 
 .story__title .en {
   font-family: var(--font-en);
-  font-weight: 500; /* Oswald Medium */
+  font-weight: 700;
 }
 
 /* ---------- Outro: collection + launch + footer ---------- */
@@ -761,6 +845,7 @@ html[lang="en"] .body {
 
 /* "Pop-up Exclusive Preview": 12px on the title's 24px line, same baseline */
 .collection__sub {
+  margin-left: 4px; /* the only gap after the title (no space between) */
   font-size: 12px;
   line-height: 0; /* sits on the title's baseline without growing its line */
   white-space: nowrap;
@@ -854,34 +939,53 @@ html[lang="en"] .body {
   transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* dim over the hover shot, under the release date */
+.product__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+/* release date over the hover shot */
+.product__badge {
+  z-index: 1;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--white);
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
 @media (hover: hover) {
-  .product:hover .product__hover { opacity: 1; }
+  .product:hover .product__hover,
+  .product:hover .product__media::after,
+  .product:hover .product__badge { opacity: 1; }
 }
 
 .product__name {
   text-align: center;
   font-family: var(--font-en);
-  font-weight: 300;
+  font-weight: 700;
   font-size: 14px;
   line-height: normal;
   color: var(--gray01);
 }
 
-/* release month, small under the name (same in every language) */
-.product__release {
-  margin-top: -4px;
-  text-align: center;
-  font-family: var(--font-en);
-  font-weight: 300;
-  font-size: 11px;
-  line-height: normal;
-  letter-spacing: 0.04em;
-  color: var(--gray01);
-  opacity: 0.6;
-}
 
 .launch {
-  min-height: 400px;
+  min-height: 560px;
   margin-top: calc(166 * var(--s));
   padding: 0 var(--gutter);
   display: flex;
@@ -890,7 +994,7 @@ html[lang="en"] .body {
   justify-content: center;
   gap: 32px;
   font-family: var(--font-en);
-  font-weight: 500;
+  font-weight: 700;
   text-align: center;
 }
 
@@ -925,7 +1029,7 @@ html[lang="en"] .body {
   text-wrap: balance; /* phones: two even lines */
 }
 
-/* Korean / Japanese notes in their own type (Oswald has no Hangul or kana);
+/* Korean / Japanese notes in their own type (Neue Haas Grotesk has no Hangul or kana);
    Japanese breaks between phrases only */
 html[lang="ko"] .launch__note,
 html[lang="ja"] .launch__note {
@@ -948,7 +1052,7 @@ html[lang="ja"] .launch__note {
 .launch__soon {
   margin-top: -24px; /* sits close under the title (the block's gap is 32px) */
   font-size: 16px;
-  font-weight: 300;
+  font-weight: 700; /* as the title's "Pop-up Exclusive Preview" */
   line-height: 24px;
   letter-spacing: 0.32px;
   color: var(--gray01);
@@ -976,13 +1080,16 @@ html[lang="ja"] .launch__note {
 }
 
 /* copyright on the left, "Go to top" on the right, same type */
+/* same type as the header's SHOP / language menu, in capitals */
 .footer__copy,
-.footer__link,
 .footer__top {
   font-family: var(--font-en);
-  font-size: 12px;
-  line-height: normal;
-  color: var(--gray01);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: var(--white);
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .footer__top {
@@ -1001,16 +1108,36 @@ html[lang="ja"] .launch__note {
   gap: 24px;
 }
 
-.footer__link {
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  transition: text-decoration-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* Channel icons under COMING SOON */
+.social {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  color: var(--white);
 }
 
-.footer__link:hover {
-  text-decoration-color: currentColor;
+/* Instagram / email: fade a little on hover */
+.social__icon {
+  display: inline-flex;
+  color: inherit;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social__icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+a.social__icon:hover {
+  opacity: 0.6;
+}
+
+/* channels not open yet: shown dimmed, not clickable */
+.social__icon.is-off {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .footer__top svg {
@@ -1028,7 +1155,7 @@ html[lang="ja"] .launch__note {
      design line starts on its own line and only wraps if it has to. */
 
   .intro {
-    margin-top: 120px;
+    margin-top: 66px;
   }
 
   .full {
@@ -1069,8 +1196,8 @@ html[lang="ja"] .launch__note {
   .launch {
     min-height: 0;
     margin-top: 0;
-    padding-top: 160px;
-    padding-bottom: 72px;
+    padding-top: 220px;
+    padding-bottom: 132px;
   }
 
   .footer {
@@ -1084,6 +1211,21 @@ html[lang="ja"] .launch__note {
   :root {
     --gutter: 16px;
   }
+
+  /* phones: the subtitle on its own line under the title */
+  .collection__sub {
+    display: block;
+    margin: 6px 0 0;
+    line-height: normal;
+  }
+
+  /* footer: one line on phones */
+  .footer__copy,
+  .footer__top {
+    font-size: 12px;
+  }
+
+
 
   .header__logo .logo {
     width: min(175.5px, 43.2vw);
@@ -1102,12 +1244,25 @@ html[lang="ja"] .launch__note {
      left only as far as its longest line needs), and the lines keep the
      design's spacing (bottoms 444 / 414 / 301 / 50 on a 990px-tall screen),
      scaled to the screen height. */
+  .kv {
+    --band: 38px;
+  }
+
+  .kv__band-track {
+    font-size: 17px; /* as the KV copy */
+  }
+
+  .kv__band-track span {
+    padding-right: 32px;
+  }
+
   .kv__text {
     --u: calc(100svh / 990);
+    font-size: 17px;
     display: grid;
     grid-template-columns: minmax(0, calc(916 / 1440 * 100%)) max-content;
     align-content: end;
-    padding: 0 calc(var(--gutter) + env(safe-area-inset-right, 0px)) 32px 0; /* last line 32px off the bottom on every phone */
+    padding: 0 calc(var(--gutter) + env(safe-area-inset-right, 0px)) calc(32px + var(--band)) 0; /* last line 32px above the band on every phone */
   }
 
   .kv__line {
@@ -1116,9 +1271,9 @@ html[lang="ja"] .launch__note {
   }
 
   /* gap between lines = difference of their bottoms − one line box */
-  .kv__line:nth-child(2) { margin-top: max(2px, calc((444 - 414) * var(--u) - 1.7em)); }
-  .kv__line:nth-child(3) { margin-top: max(16px, calc((414 - 301) * var(--u) - 1.7em)); }
-  .kv__line:nth-child(4) { margin-top: max(32px, calc((301 - 50) * var(--u) - 1.7em)); }
+  .kv__line:nth-child(2) { margin-top: max(6px, calc((454 - 414) * var(--u) - 1.2em)); }
+  .kv__line:nth-child(3) { margin-top: max(16px, calc((414 - 301) * var(--u) - 1.2em)); }
+  .kv__line:nth-child(4) { margin-top: max(32px, calc((301 - 50) * var(--u) - 1.2em)); }
 
   .title {
     font-size: 20px;
@@ -1131,7 +1286,7 @@ html[lang="ja"] .launch__note {
   }
 
   .intro {
-    margin-top: 96px;
+    margin-top: 34px;
   }
 
   .intro .title {
@@ -1196,16 +1351,13 @@ html[lang="ja"] .launch__note {
   }
 
   .product__name {
-    font-size: 12px; /* fits the narrower cards on one line */
+    font-size: 11px; /* bold: fits the narrower cards on one line */
   }
 
-  .product__release {
-    font-size: 10px;
-  }
 
   .launch {
-    padding-top: 120px;
-    padding-bottom: 104px;
+    padding-top: 160px;
+    padding-bottom: 144px;
   }
 
   .launch__lines {
@@ -1276,7 +1428,7 @@ html[lang="ja"] .launch__note {
   top: 0;
   z-index: 2;
   font-family: var(--font-en);
-  font-weight: 400;
+  font-weight: 700;
   font-size: 12px;
   letter-spacing: 0;
   line-height: 1;
@@ -1325,7 +1477,6 @@ html[lang="ja"] .launch__note {
    s1  "All About Noirs" appears alone, centred
    s2  the rule draws out beside it
    s3  "Urban Exoskeleton" joins
-   s4  the two-line subline opens underneath
    Each new piece grows its slot from zero (grid 0fr → 1fr), so what's
    already there glides aside/up to keep the group centred. */
 .gate {
@@ -1358,7 +1509,7 @@ html[lang="ja"] .launch__note {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 24px;
   line-height: normal;
   text-transform: uppercase;
@@ -1366,11 +1517,10 @@ html[lang="ja"] .launch__note {
 }
 
 /* Text rises into place from below a hidden baseline, letter by letter:
-   each word / line clips its own content and its letters follow one another
+   each word clips its own content and its letters follow one another
    ~20ms apart. Durations tighten from step to step (--d) so the opening
    gathers pace. */
-.gate__word,
-.gate__line {
+.gate__word {
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
@@ -1379,15 +1529,13 @@ html[lang="ja"] .launch__note {
   margin-bottom: -0.08em;
 }
 
-.gate__word > span,
-.gate__line > span {
+.gate__word > span {
   display: inline-block;
   white-space: nowrap;
   visibility: hidden; /* until intro.js has split it into letters */
 }
 
-.gate.is-split .gate__word > span,
-.gate.is-split .gate__line > span {
+.gate.is-split .gate__word > span {
   visibility: visible;
 }
 
@@ -1410,8 +1558,7 @@ html[lang="ja"] .launch__note {
 }
 
 .gate.s1 .gate__word--first .gate__char,
-.gate.s3 .gate__slot--word .gate__char,
-.gate.s4 .gate__line .gate__char {
+.gate.s3 .gate__slot--word .gate__char {
   transform: none;
   opacity: 1;
 }
@@ -1467,49 +1614,6 @@ html[lang="ja"] .launch__note {
 
 .gate.s2 .gate__rule {
   transform: scaleX(1);
-}
-
-/* vertical slot for the subline: height 0 → natural, pushing the title up */
-.gate__subslot {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 1s var(--ease-soft);
-}
-
-.gate__subslot > div {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.gate.s4 .gate__subslot {
-  grid-template-rows: 1fr;
-}
-
-.gate__sub {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 12px; /* the design's 12px gap, inside the slot */
-  font-weight: 300;
-  font-size: 12px;
-  line-height: 1.7;
-  /* Title Case is written into the markup: text-transform: capitalize would
-     capitalise every letter once they're split into their own spans */
-}
-
-/* the subline's letters are small, so they follow each other faster */
-.gate__line .gate__char {
-  transition-delay: calc(var(--delay, 0s) + var(--i) * 10ms);
-}
-
-.gate__line:nth-child(1) {
-  --d: 1.8s;
-  --delay: 0.2s;
-}
-
-.gate__line:nth-child(2) {
-  --d: 1.8s;
-  --delay: 0.38s;
 }
 
 @media (max-width: 767px) {

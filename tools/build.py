@@ -320,11 +320,10 @@ def page(key):
              if "brand_reading" in L else '<h2 class="title" data-t="brand">ALL ABOUT NOIRS</h2>')
     # The list holds only the other languages, without brackets.
     menu = "\n".join(
-        f'          <li><a href="{R}{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}index.html" hreflang="{LANGS[k]["lang"]}"'
+        f'            <li><a href="{R}{LANGS[k]["dir"] + "/" if LANGS[k]["dir"] else ""}index.html" hreflang="{LANGS[k]["lang"]}"'
         f' lang="{LANGS[k]["lang"]}">{LANGS[k]["label"]}</a></li>'
         for k in LANGS if k != key)
-    en_font = ('\n  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" />'
-               if key == "en" else "")
+    en_font = ""
     jp_font = ('\n  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&display=swap" />'
                '\n  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-jp.min.css" />'
                if key == "jp" else "")
@@ -362,9 +361,8 @@ def page(key):
     kv_slides = "\n".join("          " + kv_slide(i, st) for i, st in enumerate([
         "--x:55%", "--x:62%", "--x:40%", "--x:50%;--y:0%;--vy:0%;--o:50% 0%", "--x:55%"], 1))
     products = "\n".join(f'''          <li class="product">
-            <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}</div>
+            <div class="product__media">{img(f"product-{i}", "(max-width: 767px) 48vw, 315px")}{img(f"product-{i}-hover", "(max-width: 767px) 48vw, 315px", extra=' class="product__hover"')}<span class="product__badge" aria-hidden="true">RELEASE 01.2027</span></div>
             <p class="product__name">{n}</p>
-            <p class="product__release">RELEASE 01.2027</p>
           </li>''' for i, n in enumerate(PRODUCTS, 1))
 
     cut_cls = "body cut__body"
@@ -388,7 +386,9 @@ def page(key):
 {alternates}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap" />
+  <link rel="preconnect" href="https://use.typekit.net" crossorigin />
+  <!-- Neue Haas Grotesk Display + Text, Roman 400 / Bold 700 (Adobe Fonts web project) -->
+  <link rel="stylesheet" href="https://use.typekit.net/zei5hzd.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />{jp_font}{en_font}
   <link rel="stylesheet" href="{{R}}style.css?v={VER}" />
   <script type="importmap">{{ "imports": {{ "three": "https://unpkg.com/three@0.160.0/build/three.module.min.js" }} }}</script>
@@ -423,14 +423,6 @@ def page(key):
         <span class="gate__slot gate__slot--rule" aria-hidden="true"><span><span class="gate__rule"></span></span></span>
         <span class="gate__slot gate__slot--word"><span class="gate__word"><span>Urban Exoskeleton</span></span></span>
       </p>
-      <div class="gate__subslot">
-        <div>
-          <p class="gate__sub">
-            <span class="gate__line"><span>We Designed Urban Exoskeleton</span></span>
-            <span class="gate__line"><span>Enclosed, Not Exposed</span></span>
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -439,12 +431,16 @@ def page(key):
     <a class="header__logo" data-t="logo" href="{{R}}{L["dir"] + "/" if L["dir"] else ""}index.html" aria-label="All About Noirs">
 {LOGO_SVG}
     </a>
-    <nav class="lang" data-t="lang" aria-label="Language">
-      <button class="lang__current" type="button" aria-expanded="false" aria-controls="lang-menu">{label(key)}</button>
-      <ul class="lang__menu" id="lang-menu">
+    <div class="header__right">
+      <!-- the online shop opens later (an out-link, so it carries an arrow) -->
+      <span class="shop" role="link" aria-disabled="true">SHOP<svg class="shop__arrow" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1"/></svg></span>
+      <nav class="lang" data-t="lang" aria-label="Language">
+        <button class="lang__current" type="button" aria-expanded="false" aria-controls="lang-menu">{label(key)}</button>
+        <ul class="lang__menu" id="lang-menu">
 {menu}
-      </ul>
-    </nav>
+        </ul>
+      </nav>
+    </div>
   </header>
 
   <!-- scroll position (the page's own scrollbar is hidden) -->
@@ -459,10 +455,15 @@ def page(key):
         </div>
       </div>
       <div class="kv__text">
-        <p class="kv__line" style="--b:444;--i:0">CUT 01. URBAN EXOSKELETON</p>
+        <p class="kv__line" style="--b:454;--i:0">CUT 01. URBAN EXOSKELETON</p>
         <p class="kv__line" style="--b:414;--i:1">Eastern Structure</p>
-        <p class="kv__line" style="--b:301;--i:2">All About Noirs</p>
-        <p class="kv__line" style="--b:50;--i:3">Enclosed, Not Exposed</p>
+        <p class="kv__line" style="--b:301;--i:2">Enclosed, Not Exposed</p>
+        <p class="kv__line" style="--b:50;--i:3">All About Noirs</p>
+      </div>
+      <!-- release band along the bottom of the visible screen (runs on a loop) -->
+      <div class="kv__band" role="note" aria-label="CUT 01 release: January 2027">
+        <div class="kv__band-track" aria-hidden="true">
+{"".join('          <span>CUT 01 — RELEASE 01.2027</span>' + chr(10) for _ in range(12))}        </div>
       </div>
     </section>
 
@@ -516,7 +517,7 @@ def page(key):
       </div>
 
       <div class="collection">
-        <h2 class="title collection__title">CUT 01. URBAN EXOSKELETON <small class="collection__sub">Pop-up Exclusive Preview</small></h2>
+        <h2 class="title collection__title">CUT 01. LINEUP<small class="collection__sub">Pop-up Exclusive Preview</small></h2>
         <div class="collection__track" data-drag-scroll data-lenis-prevent-horizontal>
           <ul class="collection__strip">
 {products}
@@ -526,15 +527,16 @@ def page(key):
 
       <div class="launch reveal">
         <div class="launch__lines" data-t="launch-title">
-          <p>NEXT POP-UP : SEOUL</p>
+          <p>NEXT POP-UP : OSAKA / SEOUL</p>
         </div>
         <p class="launch__soon">COMING SOON</p>
+        <!-- channels: Instagram / email live, the rest not open yet -->
+        <div class="social"><a class="social__icon" href="https://www.instagram.com/allaboutnoirs/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.25" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor"/></svg></a><a class="social__icon" href="mailto:allaboutnoirs@aa-official.com" aria-label="Email allaboutnoirs@aa-official.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M2.75 2.75 12 11.5l9.25-8.75" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></a><span class="social__icon is-off" role="img" aria-label="X (coming soon)"><svg viewBox="0 0 24 24" aria-hidden="true"><path transform="translate(2.75 2.75) scale(0.771)" fill="currentColor" d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></span><span class="social__icon is-off" role="img" aria-label="YouTube (coming soon)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9.75 8.25v7.5L16 12Z" fill="currentColor"/></svg></span><span class="social__icon is-off" role="img" aria-label="Spotify (coming soon)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6.75 9.25c3.6-1.1 7.4-.8 10.5.9M7.4 12.4c3-.85 6-.6 8.6.75M8 15.4c2.4-.6 4.7-.45 6.8.55" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square"/></svg></span></div>
       </div>
 
       <footer class="footer">
         <div class="footer__left">
           <p class="footer__copy">© 2026 All About Noirs</p>
-          <a class="footer__link" href="https://www.instagram.com/allaboutnoirs/" target="_blank" rel="noopener">Instagram</a>
         </div>
         <button class="footer__top" type="button" data-to-top>
           Go to top
